@@ -1,0 +1,34 @@
+---
+import type { Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const isZh = locale === 'zh';
+---
+
+<aside class="profile-card">
+  <div class="avatar">
+    <img src="/images/placeholders/avatar.svg" alt="" width="88" height="88" />
+  </div>
+  <p class="greeting">{isZh ? '你好，我是 Yang 占位' : "Hi, I'm Yang (placeholder)"}</p>
+  <p class="statement">
+    {
+      isZh
+        ? '占位定位文案：做什么、为谁做——之后替换成真实的一两句话介绍。'
+        : 'Placeholder positioning statement — what I build and who it is for. Replace with the real one or two lines.'
+    }
+  </p>
+  <div class="tags">
+    <span>{isZh ? '占位标签' : 'Placeholder tag'}</span>
+    <span>{isZh ? '产品' : 'Product'}</span>
+    <span>{isZh ? '独立开发' : 'Indie dev'}</span>
+  </div>
+  <div class="socials">
+    <a href="#">GitHub</a>
+    <a href="#">X</a>
+    <a href="#">Email</a>
+  </div>
+</aside>

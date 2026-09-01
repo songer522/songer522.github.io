@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { t, localeOf, slugOf } from '../../i18n/utils';
+
+const locale = 'zh';
+const tr = t(locale);
+
+const videos = (await getCollection('videos', ({ id }) => localeOf(id) === locale)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+---
+
+<BaseLayout title={tr('videos.title')} description={tr('videos.title')} locale={locale}>
+  <h1 class="page-title">{tr('videos.title')}</h1>
+  <div class="project-grid">
+    {
+      videos.map((video) => (
+        <a class="project-card" href={`/videos/${slugOf(video.id)}/`}>
+          <div class="cover">
+            <img src={video.data.cover} alt="" width="1200" height="630" />
+          </div>
+          <div class="body">
+            <p class="title">{video.data.title}</p>
+            <p class="summary">{video.data.summary}</p>
+            <span class="cta">{tr('video.play')} →</span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

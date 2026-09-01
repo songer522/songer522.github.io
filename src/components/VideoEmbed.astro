@@ -1,0 +1,43 @@
+---
+interface Props {
+  platform: 'youtube' | 'bilibili';
+  videoId: string;
+  cover: string;
+  title: string;
+  playLabel: string;
+}
+
+const { platform, videoId, cover, title, playLabel } = Astro.props;
+
+const embedUrl =
+  platform === 'youtube'
+    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`
+    : `https://player.bilibili.com/player.html?bvid=${videoId}&autoplay=1`;
+
+const uid = `video-${platform}-${videoId}`;
+---
+
+<div class="video-embed" id={uid} data-embed-url={embedUrl} data-title={title}>
+  <img src={cover} alt="" width="1200" height="675" />
+  <button type="button" class="play-button" aria-label={playLabel}>
+    <span class="icon">▶</span>
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.video-embed').forEach((container) => {
+    const button = container.querySelector('button.play-button');
+    button?.addEventListener('click', () => {
+      const url = container.dataset.embedUrl;
+      const title = container.dataset.title ?? '';
+      if (!url) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.title = title;
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+      iframe.allowFullscreen = true;
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  });
+</script>

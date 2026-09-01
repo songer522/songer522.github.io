@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { t } from '../../i18n/utils';
+
+const locale = 'en';
+const tr = t(locale);
+---
+
+<BaseLayout title={tr('about.title')} description={tr('about.title')} locale={locale}>
+  <div class="detail">
+    <h1 class="page-title">{tr('about.title')}</h1>
+    <p>Placeholder bio — replace with the real background, experience, and current focus.</p>
+    <p>Placeholder paragraph — extra placeholder content to exercise typography and line height.</p>
+  </div>
+</BaseLayout>

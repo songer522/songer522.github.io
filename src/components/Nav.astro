@@ -1,0 +1,33 @@
+---
+import { t, switchLocalePath, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+const home = locale === 'zh' ? '/' : '/en/';
+const appsHref = locale === 'zh' ? '/apps/' : '/en/apps/';
+const videosHref = locale === 'zh' ? '/videos/' : '/en/videos/';
+const aboutHref = locale === 'zh' ? '/about/' : '/en/about/';
+
+const zhPath = switchLocalePath(Astro.url.pathname, 'zh');
+const enPath = switchLocalePath(Astro.url.pathname, 'en');
+---
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a class="logo" href={home}>Yang</a>
+    <div class="links">
+      <a href={appsHref}>{tr('nav.apps')}</a>
+      <a href={videosHref}>{tr('nav.videos')}</a>
+      <a href={aboutHref}>{tr('nav.about')}</a>
+      <a href="https://songer522.github.io/blog/">{tr('nav.blog')}</a>
+    </div>
+    <div class="locale-switch">
+      <a href={zhPath} aria-current={locale === 'zh' ? 'true' : 'false'}>中</a>
+      <a href={enPath} aria-current={locale === 'en' ? 'true' : 'false'}>EN</a>
+    </div>
+  </div>
+</nav>

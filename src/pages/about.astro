@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../i18n/utils';
+
+const locale = 'zh';
+const tr = t(locale);
+---
+
+<BaseLayout title={tr('about.title')} description={tr('about.title')} locale={locale}>
+  <div class="detail">
+    <h1 class="page-title">{tr('about.title')}</h1>
+    <p>占位简介：这里之后替换成真实的自我介绍——背景、经历、正在做的事情。</p>
+    <p>占位段落：更多占位内容，用于验证排版和行高。</p>
+  </div>
+</BaseLayout>

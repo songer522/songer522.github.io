@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProfileCard from '../../components/ProfileCard.astro';
+import ProjectGrid from '../../components/ProjectGrid.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import VideoEmbed from '../../components/VideoEmbed.astro';
+import { t, localeOf, slugOf } from '../../i18n/utils';
+
+const locale = 'en';
+const tr = t(locale);
+
+const apps = (await getCollection('apps', ({ id }) => localeOf(id) === locale))
+  .filter((a) => a.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const videos = (await getCollection('videos', ({ id }) => localeOf(id) === locale))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout title="Yang" description={tr('home.featured')} locale={locale}>
+  <div class="home-layout">
+    <ProfileCard locale={locale} />
+    <div>
+      <ProjectGrid title={tr('home.featured')}>
+        {
+          apps.map((app) => (
+            <ProjectCard
+              href={`/en/apps/${slugOf(app.id)}/`}
+              title={app.data.title}
+              summary={app.data.summary}
+              status={app.data.status}
+              statusLabel={tr(`status.${app.data.status}`)}
+              cover={app.data.cover}
+              cta={tr('card.viewAll')}
+            />
+          ))
+        }
+      </ProjectGrid>
+      <a class="view-all" href="/en/apps/">{tr('card.viewAll')} →</a>
+
+      <h2 class="section-title" style="margin-top: 3rem;">{tr('home.videos')}</h2>
+      <div class="video-strip">
+        {
+          videos.map((video) => (
+            <div>
+              <VideoEmbed
+                platform={video.data.platform}
+                videoId={video.data.videoId}
+                cover={video.data.cover}
+                title={video.data.title}
+                playLabel={tr('video.play')}
+              />
+              <p class="video-title">{video.data.title}</p>
+            </div>
+          ))
+        }
+      </div>
+      <a class="view-all" href="/en/videos/">{tr('card.viewAll')} →</a>
+    </div>
+  </div>
+</BaseLayout>
