@@ -33,7 +33,10 @@ Each app or video is a pair of Markdown files — one per locale, sharing the sa
 5. Markdown body is the detail-page content.
 
 **New video:** same idea in `src/content/videos/<locale>/<slug>.md`, with `platform`
-(`youtube` | `bilibili`), `videoId`, `cover`, `publishedAt`, `featured`.
+(`youtube` | `bilibili` | `xiaohongshu`), `videoId`, `cover`, `publishedAt`, `featured`.
+For `youtube`/`bilibili`, `videoId` is the platform's video ID and the facade embeds an
+iframe on click. `xiaohongshu` (RedNote) has no public embed API, so `videoId` is the
+full post URL instead, and clicking the facade opens it in a new tab.
 
 Both collections are validated against a Zod schema in `src/content.config.ts` — a typo
 in `status` or a missing required field fails the build instead of shipping a broken page.

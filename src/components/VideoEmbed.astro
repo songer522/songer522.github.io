@@ -1,6 +1,6 @@
 ---
 interface Props {
-  platform: 'youtube' | 'bilibili';
+  platform: 'youtube' | 'bilibili' | 'xiaohongshu';
   videoId: string;
   cover: string;
   title: string;
@@ -9,15 +9,27 @@ interface Props {
 
 const { platform, videoId, cover, title, playLabel } = Astro.props;
 
+// xiaohongshu has no public embed API — videoId is the post URL, and clicking
+// opens it in a new tab instead of swapping in an iframe.
+const embeddable = platform === 'youtube' || platform === 'bilibili';
+
 const embedUrl =
   platform === 'youtube'
     ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`
-    : `https://player.bilibili.com/player.html?bvid=${videoId}&autoplay=1`;
+    : platform === 'bilibili'
+      ? `https://player.bilibili.com/player.html?bvid=${videoId}&autoplay=1`
+      : videoId;
 
 const uid = `video-${platform}-${videoId}`;
 ---
 
-<div class="video-embed" id={uid} data-embed-url={embedUrl} data-title={title}>
+<div
+  class="video-embed"
+  id={uid}
+  data-embed-url={embedUrl}
+  data-embeddable={embeddable ? 'true' : 'false'}
+  data-title={title}
+>
   <img src={cover} alt="" width="1200" height="675" />
   <button type="button" class="play-button" aria-label={playLabel}>
     <span class="icon">▶</span>
@@ -31,6 +43,12 @@ const uid = `video-${platform}-${videoId}`;
       const url = container.dataset.embedUrl;
       const title = container.dataset.title ?? '';
       if (!url) return;
+
+      if (container.dataset.embeddable !== 'true') {
+        window.open(url, '_blank', 'noopener');
+        return;
+      }
+
       const iframe = document.createElement('iframe');
       iframe.src = url;
       iframe.title = title;

@@ -27,7 +27,9 @@ const videos = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(),
-    platform: z.enum(['youtube', 'bilibili']),
+    platform: z.enum(['youtube', 'bilibili', 'xiaohongshu']),
+    // youtube/bilibili: the platform's video ID. xiaohongshu has no public embed API,
+    // so this is the full post URL instead (e.g. https://www.xiaohongshu.com/explore/<id>).
     videoId: z.string(),
     cover: z.string(),
     publishedAt: z.coerce.date(),
