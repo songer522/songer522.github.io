@@ -12,7 +12,8 @@ landing page with a sticky profile sidebar on the left and a grid of project car
 right, each card carrying a status badge and a call-to-action.
 
 Current state, verified:
-- This repo (`songer522/songer-home-page`) is **empty** — one commit, no files at all.
+- This repo is `songer522/songer522.github.io` — a **user-pages** repo, so it publishes
+  at the root. It holds only this plan; there is no site code yet.
 - `https://songer522.github.io/` returns 404 — nothing published at the root yet.
 - An existing blog lives at `https://songer522.github.io/blog/` — a separate repo holding
   a dark-themed archive of 350 posts (2005–2011) with album, series, guestbook, and
@@ -35,17 +36,18 @@ means adding two Markdown files, not touching layout code.
 
 ---
 
-## Prerequisite (owner action, not code)
+## Setup status — both prerequisites are DONE
 
-GitHub publishes a *project* repo at `songer522.github.io/songer-home-page/`, not at the
-root. To land at the root, the owner must **rename this repo to `songer522.github.io`** in
-GitHub repo settings (GitHub redirects the old URL automatically), and set
-Settings → Pages → Source to **GitHub Actions**.
+Completed on 2026-09-01, before implementation started:
 
-Build for the root (`base` omitted, defaults to `/`). If the owner decides to keep the
-current repo name, the only change is adding `base: '/songer-home-page'` to
-`astro.config.mjs`. **Confirm which before the first deploy** — this is the one setting
-that silently breaks every asset URL if it is wrong.
+- The repo was renamed from `songer-home-page` to **`songer522.github.io`**. It is now a
+  user-pages repo, so it serves from `https://songer522.github.io/`. GitHub redirects the
+  old URL. The local `origin` remote was updated to the new name.
+- Settings → Pages → Source is set to **GitHub Actions**.
+
+Consequence for the build: **omit `base` entirely** in `astro.config.mjs` (it defaults to
+`/`). Do not add `base: '/songer-home-page'` — that name no longer exists and would break
+every asset URL on the site.
 
 ---
 
@@ -96,7 +98,7 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   site: 'https://songer522.github.io',
-  // base: '/songer-home-page',  // ONLY if the repo is NOT renamed — see Prerequisite
+  // no `base`: user-pages repo, serves from the root — see Setup status
   i18n: {
     defaultLocale: 'zh',
     locales: ['zh', 'en'],
@@ -478,8 +480,8 @@ the original.
 ### Step 11 — README
 
 Short and practical: how to run dev, how to add a new app (two Markdown files, same slug,
-one per locale), how to add a video, what the `status` values mean, the `cover` →
-`image()` migration note, and the repo-rename prerequisite.
+one per locale), how to add a video, what the `status` values mean, and the `cover` →
+`image()` migration note.
 
 ---
 
@@ -516,9 +518,8 @@ Run all of these before reporting the work complete. Report actual output, not i
    keyboard (Tab then Enter).
 7. Confirm the nav's Blog link points at `https://songer522.github.io/blog/` and that the
    existing blog still loads.
-8. After the repo rename and Pages-source change, push to `main` and confirm the Actions
-   deploy succeeds, `songer522.github.io` serves the site, and
-   `songer522.github.io/blog/` is unaffected.
+8. Push to `main` and confirm the Actions deploy succeeds, `songer522.github.io` serves
+   the site, and `songer522.github.io/blog/` is unaffected.
 
 ---
 
