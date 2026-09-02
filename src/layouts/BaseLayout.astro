@@ -8,15 +8,18 @@ interface Props {
   title: string;
   description: string;
   locale: Locale;
+  ogImage?: string;
 }
 
-const { title, description, locale } = Astro.props;
+const { title, description, locale, ogImage } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const zhPath = switchLocalePath(Astro.url.pathname, 'zh');
 const enPath = switchLocalePath(Astro.url.pathname, 'en');
 const zhUrl = new URL(zhPath, Astro.site);
 const enUrl = new URL(enPath, Astro.site);
+const ogImageUrl = new URL(ogImage ?? '/images/og-default.png', Astro.site);
+const ogLocale = locale === 'zh' ? 'zh_CN' : 'en_US';
 ---
 
 <!doctype html>
@@ -27,18 +30,24 @@ const enUrl = new URL(enPath, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl.href} />
-    <link rel="alternate" hreflang="zh" href={zhUrl.href} />
+    <link rel="alternate" hreflang="zh-CN" href={zhUrl.href} />
     <link rel="alternate" hreflang="en" href={enUrl.href} />
     <link rel="alternate" hreflang="x-default" href={zhUrl.href} />
-    <link rel="icon" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:image" content={ogImageUrl.href} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:site_name" content="Yang" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl.href} />
   </head>
   <body>
     <Nav locale={locale} />

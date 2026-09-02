@@ -9,6 +9,7 @@ const apps = defineCollection({
     status: z.enum(['live', 'wip', 'free-tool']),
     tags: z.array(z.string()).default([]),
     cover: z.string(), // e.g. /images/placeholders/app-1.svg
+    ogImage: z.string().optional(),
     links: z
       .array(
         z.object({
@@ -40,6 +41,7 @@ const videos = defineCollection({
       )
       .min(1),
     cover: z.string(),
+    ogImage: z.string().optional(),
     publishedAt: z.coerce.date(),
     featured: z.boolean().default(false),
   }),

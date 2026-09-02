@@ -15,7 +15,7 @@ const locale = 'zh';
 const tr = t(locale);
 ---
 
-<BaseLayout title={entry.data.title} description={entry.data.summary} locale={locale}>
+<BaseLayout title={entry.data.title} description={entry.data.summary} locale={locale} ogImage={entry.data.ogImage}>
   <div class="detail">
     <a class="back" href="/videos/">← {tr('detail.back')}</a>
     <VideoEmbed
