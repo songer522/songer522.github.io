@@ -138,12 +138,25 @@ to render `<Image />` instead of `<img>`.
 change it to `z.string().url()` so a malformed link fails the build instead of shipping.
 Do this **after** 2.2, not before — it will reject every placeholder.
 
-### 2.5 Optional guard: report remaining placeholders
+### 2.5 Optional guard: report remaining placeholders — **DONE (2026-09-02)**
 
-Add a test that greps `src/content/` and `ProfileCard.astro` for `占位` / `Placeholder`
-and prints what is left. Keep it **reporting-only at first**, then flip it to failing
-once Yang declares the content complete. The realistic failure mode here is not "we
-forgot everything" — it is one stray placeholder card shipping among nine real ones.
+`tests/placeholder-guard.test.ts` scans `src/content/` and
+`src/components/ProfileCard.astro` and prints every remaining placeholder, grouped by
+file with line numbers. The scan itself lives in `tests/helpers/placeholder-scan.ts`
+as a pure `scanForPlaceholders(root, targets)` and is unit-tested against temp-dir
+fixtures.
+
+Beyond the `占位` / `Placeholder` markers this item named, it also flags leftover
+`/images/placeholders/` covers, `url: "#"` dead links, and `_PLACEHOLDER` platform
+ids — because the failure mode described below is a *half*-converted entry (real
+title, forgotten cover), which title-only matching would pass.
+
+**Reporting-only**: the `FAIL_ON_PLACEHOLDERS` constant at the top of the guard is
+`false`, so it logs and passes. Flip it to `true` once Yang declares the content
+complete and a stray placeholder fails the build instead of shipping. Both modes were
+verified. A `vitest.config.ts` was added with `disableConsoleIntercept: true` — the
+default reporter swallows stdout from passing tests, which would have made the report
+invisible. Current baseline: **78 placeholders across 12 files**; `npm test` is 26/26.
 
 ---
 
