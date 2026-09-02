@@ -14,11 +14,19 @@ states the evidence.
 
 These are self-contained and can be done in any order, ideally as one PR.
 
-### 1.1 Add `og:image` — **highest priority in this phase**
+### 1.1 Add `og:image` — **DONE (2026-09-01)**
 
-`src/layouts/BaseLayout.astro` sets `twitter:card = summary_large_image` but emits **no
-`og:image` and no `twitter:image`**. Every link shared to X, WeChat, Slack, or iMessage
-renders with a blank preview — the card type promises an image the page never supplies.
+`src/layouts/BaseLayout.astro` now accepts an optional `ogImage` prop, falls back to
+`public/images/og-default.png` (a real 1200×630 PNG, not SVG), and emits absolute
+`og:image` / `twitter:image` URLs plus `og:locale` and `og:site_name`. Both content
+collections gained an optional `ogImage` field, and all four detail pages
+(`apps`/`videos` × `zh`/`en`) pass their entry's `ogImage` through. Verified via
+`npm run build` — emitted HTML has correct absolute URLs — and `npm test` (still
+15/15 passing). Still worth running the URL through opengraph.xyz or X's card
+validator after the next real deploy.
+
+<details>
+<summary>Original steps (for reference)</summary>
 
 Steps:
 1. Create a site-wide default OG image at `public/images/og-default.png`,
@@ -42,39 +50,38 @@ Verify with a real scraper, not by reading the HTML: after deploy, run the URL t
 opengraph.xyz or X's card validator. A tag that is present but points at a 404 looks
 identical in source to one that works.
 
-### 1.2 Replace the stock Astro favicon
+</details>
 
-`public/favicon.svg` is still Astro's default logo (verified: the 128×128 Astro mark).
-On a personal site this reads as unfinished. Replace `favicon.svg` and `favicon.ico`
-with something of Yang's, and add an `apple-touch-icon` PNG (180×180) plus a
-`site.webmanifest` if you want a decent mobile bookmark.
+### 1.2 Replace the stock Astro favicon — **DONE (2026-09-01)**
 
-### 1.3 Add a 404 page
+`public/favicon.svg` (Astro's default logo) is removed. In its place: `public/favicon.ico`
+(16/32/48/256 sizes, cropped/rasterized from a real photo Yang supplied), an
+`apple-touch-icon.png` (180×180), `icon-192.png`/`icon-512.png`, and a
+`site.webmanifest` (`theme_color` matched to the site's real `--accent` value,
+`#c2703d`). `BaseLayout.astro`'s `<head>` now links all three (`icon`,
+`apple-touch-icon`, `manifest`). Verified via `npm run build` (links present in
+emitted HTML) and `npm test` (15/15 passing).
 
-`src/pages/404.astro` does not exist, so GitHub Pages serves its own generic 404 —
-which drops the visitor out of the site entirely, with no nav and no way back.
+### 1.3 Add a 404 page — **DONE (2026-09-01)**
 
-Build one on `BaseLayout` with links home and to `/apps/`. Note the bilingual wrinkle:
-GitHub Pages serves a **single** `404.html` for the whole domain, so it cannot be
-locale-aware server-side. Write it bilingual (both languages stacked, zh first), rather
-than attempting locale detection.
+`src/pages/404.astro` now exists, built on `BaseLayout`, with links home and to
+`/apps/`. Bilingual as specced: both languages stacked, zh first (no locale
+detection attempted, since GitHub Pages serves one `404.html` for the whole
+domain). Verified via `npm run build` — `dist/404.html` contains both `<h1>`s —
+and `npm test` (15/15 passing).
 
-### 1.4 Add a sitemap and robots.txt
+### 1.4 Add a sitemap and robots.txt — **DONE (2026-09-01)**
 
-Neither exists (no `@astrojs/sitemap` in `package.json`, no `public/robots.txt`).
-
-```bash
-npx astro add sitemap
-```
-Then create `public/robots.txt` pointing at `https://songer522.github.io/sitemap-index.xml`.
-
-One caution specific to this domain: the blog at `songer522.github.io/blog/` is a
-**different repo**. A `robots.txt` at the domain root applies to the whole origin,
-including `/blog/`. Do not add `Disallow` rules casually — you would be making
-crawl-policy decisions for the blog from this repo.
-
-Confirm `@astrojs/sitemap` picks up both locales and emits `hreflang` alternates
-matching the ones `BaseLayout` already renders.
+`@astrojs/sitemap` is installed and configured in `astro.config.mjs` with an
+explicit `i18n` block (`defaultLocale: 'zh'`, `locales: { zh: 'zh-CN', en: 'en' }`)
+so each URL in `sitemap-0.xml` carries `xhtml:link rel="alternate"` entries for
+both locales. These codes (`zh-CN` / `en`) match `<html lang>` and the page-level
+`hreflang` tags in `BaseLayout.astro` exactly — a review caught the initial
+mismatch (`en-US` in the sitemap vs `en` on the page), fixed 2026-09-01.
+`public/robots.txt` points at `https://songer522.github.io/sitemap-index.xml` and
+adds no `Disallow` rules, so it makes no crawl-policy decisions for the separate
+`/blog/` repo. Verified via `npm run build` (inspected `dist/sitemap-0.xml` and
+`dist/robots.txt` directly) and `npm test`.
 
 ---
 
