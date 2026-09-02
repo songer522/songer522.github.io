@@ -1,0 +1,90 @@
+---
+import {
+  pickPrimaryPlatform,
+  otherPlatforms,
+  platformUrl,
+  platformLabel,
+  type PlatformLink,
+} from '../lib/video';
+import { t, type Locale } from '../i18n/utils';
+
+interface Props {
+  platforms: PlatformLink[];
+  locale: Locale;
+  cover: string;
+  title: string;
+  playLabel: string;
+}
+
+const { platforms, locale, cover, title, playLabel } = Astro.props;
+const tr = t(locale);
+
+const primary = pickPrimaryPlatform(platforms, locale);
+const others = otherPlatforms(platforms, primary);
+
+const embeddable = primary.platform === 'youtube' || primary.platform === 'bilibili';
+
+const embedUrl =
+  primary.platform === 'youtube'
+    ? `https://www.youtube-nocookie.com/embed/${primary.id}?autoplay=1`
+    : primary.platform === 'bilibili'
+      ? `https://player.bilibili.com/player.html?bvid=${primary.id}&autoplay=1`
+      : primary.id;
+
+const uid = `video-${primary.platform}-${primary.id}`;
+---
+
+<div
+  class="video-embed"
+  id={uid}
+  data-embed-url={embedUrl}
+  data-embeddable={embeddable ? 'true' : 'false'}
+  data-title={title}
+>
+  <img src={cover} alt="" width="1200" height="675" />
+  <button type="button" class="play-button" aria-label={playLabel}>
+    <span class="icon">▶</span>
+  </button>
+</div>
+
+<p class="video-source">
+  {tr('video.source')}: {platformLabel(primary.platform, locale)}
+</p>
+
+{
+  others.length > 0 && (
+    <p class="video-also-on">
+      {tr('video.alsoOn')}:{' '}
+      {others.map((p, i) => (
+        <>
+          {i > 0 && ' · '}
+          <a href={platformUrl(p)}>{platformLabel(p.platform, locale)}</a>
+        </>
+      ))}
+    </p>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('.video-embed').forEach((container) => {
+    const button = container.querySelector('button.play-button');
+    button?.addEventListener('click', () => {
+      const url = container.dataset.embedUrl;
+      const title = container.dataset.title ?? '';
+      if (!url) return;
+
+      if (container.dataset.embeddable !== 'true') {
+        window.open(url, '_blank', 'noopener');
+        return;
+      }
+
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.title = title;
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+      iframe.allowFullscreen = true;
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  });
+</script>

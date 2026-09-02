@@ -1,0 +1,29 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  status?: 'live' | 'wip' | 'free-tool';
+  statusLabel?: string;
+  cover?: string;
+  cta: string;
+}
+
+const { href, title, summary, status, statusLabel, cover, cta } = Astro.props;
+---
+
+<a class="project-card" href={href}>
+  {status && statusLabel && <span class={`badge ${status}`}>{statusLabel}</span>}
+  {
+    cover && (
+      <div class="cover">
+        <img src={cover} alt="" width="1200" height="630" />
+      </div>
+    )
+  }
+  <div class="body">
+    <p class="title">{title}</p>
+    <p class="summary">{summary}</p>
+    <span class="cta">{cta} →</span>
+  </div>
+</a>

@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectGrid from '../../components/ProjectGrid.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { t, localeOf, slugOf } from '../../i18n/utils';
+
+const locale = 'zh';
+const tr = t(locale);
+
+const apps = (await getCollection('apps', ({ id }) => localeOf(id) === locale)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout title={tr('apps.title')} description={tr('apps.title')} locale={locale}>
+  <h1 class="page-title">{tr('apps.title')}</h1>
+  <ProjectGrid>
+    {
+      apps.map((app) => (
+        <ProjectCard
+          href={`/apps/${slugOf(app.id)}/`}
+          title={app.data.title}
+          summary={app.data.summary}
+          status={app.data.status}
+          statusLabel={tr(`status.${app.data.status}`)}
+          cover={app.data.cover}
+          cta={tr('card.viewAll')}
+        />
+      ))
+    }
+  </ProjectGrid>
+</BaseLayout>
