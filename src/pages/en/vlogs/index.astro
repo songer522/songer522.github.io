@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import VlogGrid from '../../../components/VlogGrid.astro';
+import { vlogs, playlistUrl } from '../../../data/vlogs';
+import { t } from '../../../i18n/utils';
+
+const locale = 'en';
+const tr = t(locale);
+---
+
+<BaseLayout title={tr('vlogs.title')} description={tr('vlogs.note')} locale={locale} noindex>
+  <h1 class="page-title">{tr('vlogs.title')}</h1>
+  <p class="page-note">
+    {tr('vlogs.note')}{' '}
+    <a href={playlistUrl} target="_blank" rel="noopener noreferrer">YouTube →</a>
+  </p>
+  <VlogGrid vlogs={vlogs} />
+</BaseLayout>

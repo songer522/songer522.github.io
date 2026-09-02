@@ -1,0 +1,20 @@
+---
+import type { Vlog } from '../data/vlogs';
+
+interface Props {
+  vlogs: Vlog[];
+}
+
+const { vlogs } = Astro.props;
+---
+
+<div class="vlog-grid">
+  {
+    vlogs.map((vlog) => (
+      <a class="vlog" href={`https://www.youtube.com/watch?v=${vlog.id}`} target="_blank" rel="noopener noreferrer">
+        <img src={`/images/vlogs/${vlog.id}.jpg`} alt="" width="480" height="270" loading="lazy" />
+        <p>{vlog.title}</p>
+      </a>
+    ))
+  }
+</div>
