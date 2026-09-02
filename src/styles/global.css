@@ -363,6 +363,22 @@ img {
   border-radius: 999px;
 }
 
+.detail p > img {
+  max-width: 360px;
+  margin: 1.75rem auto 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.detail p > img + em,
+.detail p > em:only-child {
+  display: block;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: normal;
+}
+
 .detail .links {
   margin-top: 2rem;
   padding-top: 1.5rem;
