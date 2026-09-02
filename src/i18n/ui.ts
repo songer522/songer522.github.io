@@ -22,7 +22,7 @@ export const ui = {
     'video.play': '播放视频',
     'video.source': '来源',
     'video.alsoOn': '也发布在',
-    'footer.note': '占位文案 · Placeholder footer',
+    'footer.note': '© 2026 宋二 · 用 Astro 搭建',
   },
   en: {
     'nav.apps': 'Work',
@@ -43,6 +43,6 @@ export const ui = {
     'video.play': 'Play video',
     'video.source': 'Source',
     'video.alsoOn': 'Also on',
-    'footer.note': 'Placeholder footer',
+    'footer.note': '© 2026 Yang · Built with Astro',
   },
 } as const;

@@ -93,12 +93,16 @@ Phase 1.**
 
 ### 2.1 What Yang needs to supply
 
-- A real avatar image (square, ≥400×400).
-- The positioning statement — one or two lines, **in both languages**. Currently
-  hardcoded placeholder text in `src/components/ProfileCard.astro` (lines with
-  `占位定位文案` / `Placeholder positioning statement`).
-- Real topic tags and real social URLs. `ProfileCard.astro` currently has three
-  `<a href="#">` stubs for GitHub / X / Email.
+#### Profile — **DONE (2026-09-02)**
+
+`src/components/ProfileCard.astro` now has real content: `public/images/avatar.jpg`
+(480×480 JPEG), a bilingual positioning statement (Chicago-based, works in tech,
+builds indie apps, records life on camera), real tags (独立开发/Indie dev,
+视频创作/Video, 芝加哥生活/Life in Chicago), and real social links — GitHub, YouTube,
+RedNote (小红书), Weibo, and Email (`mailto:`). No `og:image` or schema change was
+needed here since the avatar is a static `<img>`, not a content-collection field.
+
+Still open:
 - For each app: title, one-line summary, status, tags, cover screenshot, and real
   links.
 - For each video: title, summary, the platform mirrors it exists on, cover, publish

@@ -11,24 +11,28 @@ const isZh = locale === 'zh';
 
 <aside class="profile-card">
   <div class="avatar">
-    <img src="/images/placeholders/avatar.svg" alt="" width="88" height="88" />
+    <img src="/images/avatar.jpg" alt="" width="88" height="88" />
   </div>
-  <p class="greeting">{isZh ? '你好，我是 Yang 占位' : "Hi, I'm Yang (placeholder)"}</p>
+  <p class="greeting">{isZh ? '你好，我是宋二' : "Hi, I'm Yang"}</p>
   <p class="statement">
     {
       isZh
-        ? '占位定位文案：做什么、为谁做——之后替换成真实的一两句话介绍。'
-        : 'Placeholder positioning statement — what I build and who it is for. Replace with the real one or two lines.'
+        ? '坐标芝加哥，在科技行业上班，业余做独立应用，用镜头记录生活，也挖掘一些有意思的故事。'
+        : 'Based in Chicago, working in tech. I build indie apps on the side and use a camera to record everyday life — and to dig up the odd story worth telling.'
     }
   </p>
   <div class="tags">
-    <span>{isZh ? '占位标签' : 'Placeholder tag'}</span>
-    <span>{isZh ? '产品' : 'Product'}</span>
     <span>{isZh ? '独立开发' : 'Indie dev'}</span>
+    <span>{isZh ? '视频创作' : 'Video'}</span>
+    <span>{isZh ? '芝加哥生活' : 'Life in Chicago'}</span>
   </div>
   <div class="socials">
-    <a href="#">GitHub</a>
-    <a href="#">X</a>
-    <a href="#">Email</a>
+    <a href="https://github.com/songer522">GitHub</a>
+    <a href="https://www.youtube.com/@songer522">YouTube</a>
+    <a href="https://www.rednote.com/user/profile/5ad21f596b58b74fe7a40a87">
+      {isZh ? '小红书' : 'RedNote'}
+    </a>
+    <a href="https://weibo.com/songyang1106">{isZh ? '微博' : 'Weibo'}</a>
+    <a href="mailto:songer522@gmail.com">{isZh ? '邮箱' : 'Email'}</a>
   </div>
 </aside>
