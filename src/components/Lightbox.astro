@@ -1,0 +1,48 @@
+---
+import { t, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+---
+
+<dialog class="lightbox" aria-label={tr('lightbox.label')}>
+  <form method="dialog">
+    <button class="lightbox-close" aria-label={tr('lightbox.close')}>&times;</button>
+  </form>
+  <img alt="" />
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('dialog.lightbox');
+  const full = dialog?.querySelector('img');
+  if (dialog && full) {
+    document.querySelectorAll<HTMLImageElement>('.detail p > img').forEach((img) => {
+      img.classList.add('zoomable');
+      img.tabIndex = 0;
+      img.setAttribute('role', 'button');
+
+      const open = () => {
+        full.src = img.currentSrc || img.src;
+        full.alt = img.alt;
+        dialog.showModal();
+      };
+
+      img.addEventListener('click', open);
+      img.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open();
+        }
+      });
+    });
+
+    // Clicking the backdrop closes; clicks on the image itself must not bubble to it.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+</script>
