@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+      - uses: withastro/action@v6
         with:
-          # v3 defaults to Node 20; package.json engines requires >=22.12.0
+          # v6 defaults to Node 24; package.json engines requires >=22.12.0
           # (Astro 7). Pinned to the declared floor: if it builds here, it
           # builds on newer Node too.
           node-version: "22"
