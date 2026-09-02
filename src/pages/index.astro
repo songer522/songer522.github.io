@@ -46,8 +46,8 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
           videos.map((video) => (
             <div>
               <VideoEmbed
-                platform={video.data.platform}
-                videoId={video.data.videoId}
+                platforms={video.data.platforms}
+                locale={locale}
                 cover={video.data.cover}
                 title={video.data.title}
                 playLabel={tr('video.play')}

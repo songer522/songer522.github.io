@@ -27,10 +27,18 @@ const videos = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(),
-    platform: z.enum(['youtube', 'bilibili', 'xiaohongshu']),
-    // youtube/bilibili: the platform's video ID. xiaohongshu has no public embed API,
-    // so this is the full post URL instead (e.g. https://www.xiaohongshu.com/explore/<id>).
-    videoId: z.string(),
+    // One piece of content can be mirrored across platforms — list every mirror here
+    // instead of creating a separate entry per platform, so the site shows one card,
+    // not duplicates. id: youtube/bilibili take the platform's video ID; xiaohongshu
+    // has no public embed API, so its id is the full post URL instead.
+    platforms: z
+      .array(
+        z.object({
+          platform: z.enum(['youtube', 'bilibili', 'xiaohongshu']),
+          id: z.string(),
+        }),
+      )
+      .min(1),
     cover: z.string(),
     publishedAt: z.coerce.date(),
     featured: z.boolean().default(false),

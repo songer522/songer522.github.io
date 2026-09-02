@@ -20,6 +20,8 @@ export const ui = {
     'detail.links': '相关链接',
     'detail.back': '返回',
     'video.play': '播放视频',
+    'video.source': '来源',
+    'video.alsoOn': '也发布在',
     'footer.note': '占位文案 · Placeholder footer',
   },
   en: {
@@ -39,6 +41,8 @@ export const ui = {
     'detail.links': 'Links',
     'detail.back': 'Back',
     'video.play': 'Play video',
+    'video.source': 'Source',
+    'video.alsoOn': 'Also on',
     'footer.note': 'Placeholder footer',
   },
 } as const;

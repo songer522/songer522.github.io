@@ -453,6 +453,23 @@ img {
   font-weight: 600;
 }
 
+.video-source {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.video-also-on {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.video-also-on a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
 .view-all {
   margin-top: 1.5rem;
   display: inline-block;

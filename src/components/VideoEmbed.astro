@@ -1,26 +1,37 @@
 ---
+import {
+  pickPrimaryPlatform,
+  otherPlatforms,
+  platformUrl,
+  platformLabel,
+  type PlatformLink,
+} from '../lib/video';
+import { t, type Locale } from '../i18n/utils';
+
 interface Props {
-  platform: 'youtube' | 'bilibili' | 'xiaohongshu';
-  videoId: string;
+  platforms: PlatformLink[];
+  locale: Locale;
   cover: string;
   title: string;
   playLabel: string;
 }
 
-const { platform, videoId, cover, title, playLabel } = Astro.props;
+const { platforms, locale, cover, title, playLabel } = Astro.props;
+const tr = t(locale);
 
-// xiaohongshu has no public embed API — videoId is the post URL, and clicking
-// opens it in a new tab instead of swapping in an iframe.
-const embeddable = platform === 'youtube' || platform === 'bilibili';
+const primary = pickPrimaryPlatform(platforms, locale);
+const others = otherPlatforms(platforms, primary);
+
+const embeddable = primary.platform === 'youtube' || primary.platform === 'bilibili';
 
 const embedUrl =
-  platform === 'youtube'
-    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`
-    : platform === 'bilibili'
-      ? `https://player.bilibili.com/player.html?bvid=${videoId}&autoplay=1`
-      : videoId;
+  primary.platform === 'youtube'
+    ? `https://www.youtube-nocookie.com/embed/${primary.id}?autoplay=1`
+    : primary.platform === 'bilibili'
+      ? `https://player.bilibili.com/player.html?bvid=${primary.id}&autoplay=1`
+      : primary.id;
 
-const uid = `video-${platform}-${videoId}`;
+const uid = `video-${primary.platform}-${primary.id}`;
 ---
 
 <div
@@ -35,6 +46,24 @@ const uid = `video-${platform}-${videoId}`;
     <span class="icon">▶</span>
   </button>
 </div>
+
+<p class="video-source">
+  {tr('video.source')}: {platformLabel(primary.platform, locale)}
+</p>
+
+{
+  others.length > 0 && (
+    <p class="video-also-on">
+      {tr('video.alsoOn')}:{' '}
+      {others.map((p, i) => (
+        <>
+          {i > 0 && ' · '}
+          <a href={platformUrl(p)}>{platformLabel(p.platform, locale)}</a>
+        </>
+      ))}
+    </p>
+  )
+}
 
 <script>
   document.querySelectorAll<HTMLElement>('.video-embed').forEach((container) => {

@@ -32,11 +32,27 @@ Each app or video is a pair of Markdown files — one per locale, sharing the sa
    not Astro's `image()` helper — see the migration note below.
 5. Markdown body is the detail-page content.
 
-**New video:** same idea in `src/content/videos/<locale>/<slug>.md`, with `platform`
-(`youtube` | `bilibili` | `xiaohongshu`), `videoId`, `cover`, `publishedAt`, `featured`.
-For `youtube`/`bilibili`, `videoId` is the platform's video ID and the facade embeds an
-iframe on click. `xiaohongshu` (RedNote) has no public embed API, so `videoId` is the
-full post URL instead, and clicking the facade opens it in a new tab.
+**New video:** same idea in `src/content/videos/<locale>/<slug>.md`, with `cover`,
+`publishedAt`, `featured`, and a `platforms` array — one entry per mirror of the same
+video, e.g.:
+
+```yaml
+platforms:
+  - { platform: youtube, id: dQw4w9WgXcQ }
+  - { platform: bilibili, id: BV1xx411c7mD }
+  - { platform: xiaohongshu, id: "https://www.xiaohongshu.com/explore/<id>" }
+```
+
+If the same video is posted to more than one platform, list every mirror on the *one*
+entry — don't create a separate entry per platform, or the site will show duplicate
+cards for the same content. `id` is the platform's video ID for `youtube`/`bilibili`;
+`xiaohongshu` (RedNote) has no public embed API, so its `id` is the full post URL
+instead.
+
+`src/lib/video.ts` picks which mirror to embed: bilibili first on the zh site (no VPN
+needed), youtube first on en, falling back to whatever's listed. The rest show as
+"also on" links below the player. YouTube's label on the zh site reads
+"YouTube（自备梯子）" — a wink at the fact that it needs a VPN there.
 
 Both collections are validated against a Zod schema in `src/content.config.ts` — a typo
 in `status` or a missing required field fails the build instead of shipping a broken page.

@@ -19,8 +19,8 @@ const tr = t(locale);
   <div class="detail">
     <a class="back" href="/videos/">← {tr('detail.back')}</a>
     <VideoEmbed
-      platform={entry.data.platform}
-      videoId={entry.data.videoId}
+      platforms={entry.data.platforms}
+      locale={locale}
       cover={entry.data.cover}
       title={entry.data.title}
       playLabel={tr('video.play')}
