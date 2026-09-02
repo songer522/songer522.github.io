@@ -16,6 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: withastro/action@v3
+        with:
+          # v3 defaults to Node 20; package.json engines requires >=22.12.0
+          # (Astro 7). Pinned to the declared floor: if it builds here, it
+          # builds on newer Node too.
+          node-version: "22"
   deploy:
     needs: build
     runs-on: ubuntu-latest
