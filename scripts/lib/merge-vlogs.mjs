@@ -4,6 +4,38 @@
  */
 
 /**
+ * Decide what to do with playlist entries YouTube reports as deleted or private.
+ *
+ * Skipping them outright makes them indistinguishable from "removed from the
+ * playlist", so the entry is dropped, its thumbnail deleted, and if the video later
+ * comes back it returns under YouTube's title — silently undoing a title edited here
+ * to keep someone's name off a public page. So a video we already know is held at its
+ * local title; one we have never seen is dropped, since there is nothing to show.
+ *
+ * @param {{ id: string, title: string, unavailable?: boolean }[]} items playlist order
+ * @param {Vlog[]} existing entries currently in the file
+ * @returns {{ items: Vlog[], held: string[] }} `held` is for warning the operator
+ */
+export function resolveUnavailable(items, existing) {
+  const byId = new Map(existing.map((v) => [v.id, v]));
+  const resolved = [];
+  const held = [];
+
+  for (const item of items) {
+    if (!item.unavailable) {
+      resolved.push({ id: item.id, title: item.title });
+      continue;
+    }
+    const local = byId.get(item.id);
+    if (!local) continue;
+    resolved.push({ id: local.id, title: local.title });
+    held.push(local.id);
+  }
+
+  return { items: resolved, held };
+}
+
+/**
  * Reconcile the committed vlog list against what the playlist currently holds.
  *
  * Existing entries keep whatever title is in the file: that is what makes a local

@@ -18,7 +18,7 @@ import { readFile, writeFile, access, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 
-import { mergeVlogs } from './lib/merge-vlogs.mjs';
+import { mergeVlogs, resolveUnavailable } from './lib/merge-vlogs.mjs';
 import { parseVlogs, renderVlogs, playlistIdFrom } from './lib/vlogs-file.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -78,10 +78,12 @@ async function fetchPlaylist(playlistId, key) {
     for (const item of body.items ?? []) {
       const id = item.snippet?.resourceId?.videoId;
       const title = item.snippet?.title ?? '';
-      // Videos that were deleted or made private still occupy a playlist slot but
-      // carry a placeholder title and no usable thumbnail. Skip rather than publish.
-      if (!id || title === 'Deleted video' || title === 'Private video') continue;
-      items.push({ id, title });
+      if (!id) continue;
+      // Deleted and private videos keep their playlist slot but carry a placeholder
+      // title and no usable thumbnail. Flag rather than drop, so resolveUnavailable
+      // can tell them apart from a video actually removed from the playlist.
+      const unavailable = title === 'Deleted video' || title === 'Private video';
+      items.push({ id, title, unavailable });
     }
 
     pageToken = body.nextPageToken ?? '';
@@ -132,7 +134,8 @@ async function main() {
   const existing = parseVlogs(source);
   const { id: playlistId, url: playlistUrl } = playlistIdFrom(source);
 
-  const fetched = await fetchPlaylist(playlistId, key);
+  const raw = await fetchPlaylist(playlistId, key);
+  const { items: fetched, held } = resolveUnavailable(raw, existing);
   if (fetched.length === 0) throw new Error('the playlist returned no usable videos — refusing to empty the file');
 
   const { vlogs, added, removed, drifted } = mergeVlogs(existing, fetched);
@@ -142,6 +145,9 @@ async function main() {
 
   for (const v of added) console.log(`  + ${v.id}  ${v.title}`);
   for (const v of removed) console.log(`  - ${v.id}  ${v.title}`);
+  for (const id of held) {
+    console.log(`  ?  ${id}  deleted or private on YouTube — entry and title kept`);
+  }
   for (const d of drifted) {
     console.log(`  ~ ${d.id}  title differs — keeping yours`);
     console.log(`      local:  ${d.local}`);
@@ -157,17 +163,25 @@ async function main() {
     return;
   }
 
-  // A thumbnail that will not download must not end up as an entry, or the page ships
-  // a broken image. Collect the failures, drop those entries, and keep going: the next
-  // run retries them rather than the whole sync aborting on one bad fetch.
+  // Failures are collected rather than thrown, so one bad fetch does not abort the run
+  // and leave the data file unwritten. What happens next depends on whether the entry
+  // is new — see below.
+  const addedIds = new Set(added.map((v) => v.id));
   const failed = new Set();
   for (const v of missing) {
     try {
       await fetchThumbnail(v.id);
       console.log(`  thumbnail ${v.id}.jpg`);
     } catch (error) {
-      failed.add(v.id);
-      console.log(`  !  ${v.id}  thumbnail failed, entry skipped — ${error.message}`);
+      // Only a new entry may be dropped. Dropping an existing one would remove it from
+      // the file, and the next run would re-add it under YouTube's title — quietly
+      // reverting a title edited here for privacy.
+      if (addedIds.has(v.id)) {
+        failed.add(v.id);
+        console.log(`  !  ${v.id}  thumbnail failed, new entry skipped — ${error.message}`);
+      } else {
+        console.log(`  !  ${v.id}  thumbnail failed, entry kept without image — ${error.message}`);
+      }
     }
   }
 
@@ -179,7 +193,9 @@ async function main() {
       await unlink(path.join(THUMB_DIR, `${v.id}.jpg`));
       console.log(`  deleted thumbnail ${v.id}.jpg`);
     } catch (error) {
-      if (error.code !== 'ENOENT') throw error;
+      if (error.code !== 'ENOENT') {
+        console.log(`  !  ${v.id}  could not delete thumbnail — ${error.message}`);
+      }
     }
   }
 
@@ -187,7 +203,7 @@ async function main() {
   await writeFile(DATA_FILE, renderVlogs(kept, playlistUrl), 'utf8');
 
   if (failed.size) {
-    console.log(`\n${failed.size} entr(y/ies) skipped for missing thumbnails — re-run to retry.`);
+    console.log(`\n${failed.size} new entr(y/ies) skipped for missing thumbnails — re-run to retry.`);
   }
   const changed = added.length || removed.length || missing.length;
   console.log(changed ? '\nDone. Review `git diff`, then commit and push.' : '\nNo changes.');
