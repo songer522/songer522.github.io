@@ -30,6 +30,7 @@ export const ui = {
     'video.play': '播放视频',
     'video.source': '来源',
     'video.alsoOn': '也发布在',
+    'locale.switch': '切换到 English',
     'footer.note': '© 2026 宋二 · 由 Astro、深夜和过量咖啡因驱动',
   },
   en: {
@@ -59,6 +60,7 @@ export const ui = {
     'video.play': 'Play video',
     'video.source': 'Source',
     'video.alsoOn': 'Also on',
+    'locale.switch': '切换到中文',
     'footer.note': '© 2026 Yang · Powered by Astro, late nights, and too much caffeine',
   },
 } as const;

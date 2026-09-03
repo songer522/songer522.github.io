@@ -12,8 +12,9 @@ const appsHref = locale === 'zh' ? '/apps/' : '/en/apps/';
 const videosHref = locale === 'zh' ? '/videos/' : '/en/videos/';
 const aboutHref = locale === 'zh' ? '/about/' : '/en/about/';
 
-const zhPath = switchLocalePath(Astro.url.pathname, 'zh');
-const enPath = switchLocalePath(Astro.url.pathname, 'en');
+const otherLocale: Locale = locale === 'zh' ? 'en' : 'zh';
+const otherPath = switchLocalePath(Astro.url.pathname, otherLocale);
+const otherLabel = otherLocale === 'zh' ? '中' : 'EN';
 ---
 
 <nav class="site-nav">
@@ -42,8 +43,7 @@ const enPath = switchLocalePath(Astro.url.pathname, 'en');
       <a href="https://songer522.github.io/blog/">{tr('nav.blog')}</a>
     </div>
     <div class="locale-switch">
-      <a href={zhPath} aria-current={locale === 'zh' ? 'true' : 'false'}>中</a>
-      <a href={enPath} aria-current={locale === 'en' ? 'true' : 'false'}>EN</a>
+      <a href={otherPath} hreflang={otherLocale} aria-label={tr('locale.switch')}>{otherLabel}</a>
     </div>
   </div>
 </nav>

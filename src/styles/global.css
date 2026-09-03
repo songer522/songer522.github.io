@@ -194,6 +194,7 @@ img {
 
 .locale-switch a {
   text-decoration: none;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
   font-size: 0.85rem;
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
@@ -201,7 +202,8 @@ img {
   color: var(--muted);
 }
 
-.locale-switch a[aria-current='true'] {
+.locale-switch a:hover,
+.locale-switch a:focus-visible {
   background: var(--accent-soft);
   color: var(--accent);
   border-color: var(--accent-soft);
