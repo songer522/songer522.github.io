@@ -33,6 +33,26 @@ describe('parseVlogDate', () => {
   it('rejects an impossible date rather than rolling it over', () => {
     expect(parseVlogDate('Date: 2024.13.01')).toBeNull();
     expect(parseVlogDate('Date: 2024.02.32')).toBeNull();
+    expect(parseVlogDate('Date: 2024.00.10')).toBeNull();
+    expect(parseVlogDate('Date: 2024.05.00')).toBeNull();
+  });
+
+  it('rejects a day that is in range but not in that month', () => {
+    expect(parseVlogDate('Date: 2024.02.31')).toBeNull();
+    expect(parseVlogDate('Date: 2024.04.31')).toBeNull();
+    expect(parseVlogDate('Date: 2024.06.31')).toBeNull();
+  });
+
+  it('knows which Februaries have a 29th', () => {
+    expect(parseVlogDate('Date: 2024.02.29')).toBe('2024-02-29');
+    expect(parseVlogDate('Date: 2000.02.29')).toBe('2000-02-29');
+    expect(parseVlogDate('Date: 2023.02.29')).toBeNull();
+    expect(parseVlogDate('Date: 1900.02.29')).toBeNull();
+  });
+
+  it('keeps the last day of the months that have 30 and 31', () => {
+    expect(parseVlogDate('Date: 2024.04.30')).toBe('2024-04-30');
+    expect(parseVlogDate('Date: 2024.12.31')).toBe('2024-12-31');
   });
 });
 

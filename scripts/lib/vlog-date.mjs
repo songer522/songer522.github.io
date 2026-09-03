@@ -20,8 +20,18 @@ export function parseVlogDate(description) {
 
   const [, year, month, day] = match;
   // A nonsense date is worse than no date: it would sort the video to a confident but
-  // wrong place. Reject rather than let Date roll 2024-13-01 over into January.
-  if (+month < 1 || +month > 12 || +day < 1 || +day > 31) return null;
+  // wrong place. Bounding the day at 31 is not enough — 2024.02.31 is in range and
+  // still not a day. Date.UTC normalises anything out of range (Feb 31 becomes Mar 2,
+  // month 13 becomes next January), so build the date and reject it unless every field
+  // survives the round trip. That gets the month lengths and leap years for free.
+  const utc = new Date(Date.UTC(+year, +month - 1, +day));
+  if (
+    utc.getUTCFullYear() !== +year ||
+    utc.getUTCMonth() !== +month - 1 ||
+    utc.getUTCDate() !== +day
+  ) {
+    return null;
+  }
 
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
