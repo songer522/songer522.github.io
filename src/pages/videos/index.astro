@@ -1,5 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import VlogGrid from '../../components/VlogGrid.astro';
+import { vlogs } from '../../data/vlogs';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { t, localeOf, slugOf } from '../../i18n/utils';
 
@@ -29,4 +31,9 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
       ))
     }
   </div>
+
+  <h2 class="section-title" style="margin-top: 3rem;">{tr('home.vlogs')}</h2>
+  <p class="page-note">{tr('vlogs.note')}</p>
+  <VlogGrid vlogs={vlogs.slice(0, 6)} />
+  <a class="view-all" href="/vlogs/">{tr('vlogs.viewAll').replace('{n}', String(vlogs.length))} →</a>
 </BaseLayout>
