@@ -53,6 +53,6 @@ export function platformUrl({ platform, id }: PlatformLink): string {
 /** Display label for a platform link. YouTube gets a wink on the zh site: it needs a VPN there. */
 export function platformLabel(platform: VideoPlatform, locale: Locale): string {
   if (platform === 'youtube') return locale === 'zh' ? 'YouTube（自备梯子）' : 'YouTube';
-  if (platform === 'bilibili') return 'Bilibili';
+  if (platform === 'bilibili') return locale === 'zh' ? '哔哩哔哩' : 'Bilibili';
   return locale === 'zh' ? '小红书' : 'RedNote';
 }
