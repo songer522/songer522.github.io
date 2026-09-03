@@ -6,7 +6,23 @@ export interface PlatformLink {
   id: string;
 }
 
+/**
+ * Platforms with a public web player we can drop into an iframe. xiaohongshu has no
+ * embed API at all, so it only ever links out.
+ */
 const embeddablePlatforms: VideoPlatform[] = ['youtube', 'bilibili'];
+
+/**
+ * Platforms whose player is desktop-only, so a phone has to link out instead.
+ *
+ * bilibili has no web player that plays on a phone. player.html turns mobile user
+ * agents away outright, and the html5 mobile player at /blackboard/ requests its
+ * media with an empty buvid, which the CDN silently drops — the reader is left
+ * staring at 视频连接失效，视频内容不和谐. Both are inside bilibili's own player and
+ * API, so no iframe URL can work around them; opening the video on bilibili, where
+ * the app can take over, is the only thing that actually plays.
+ */
+const desktopOnlyPlatforms: VideoPlatform[] = ['bilibili'];
 
 /**
  * Mirror preference per locale, most preferred first.
@@ -30,9 +46,52 @@ export function pickPrimaryPlatform(platforms: PlatformLink[], locale: Locale): 
   return platforms[0];
 }
 
-/** Whether a mirror can play inline rather than only linking out. */
+/** The bits of `navigator` that say whether we are on a phone or tablet. */
+export interface DeviceHints {
+  userAgent: string;
+  platform?: string;
+  maxTouchPoints?: number;
+}
+
+/**
+ * Whether to treat this device as mobile for the purpose of picking a player.
+ *
+ * Matching the user agent is the same signal the platforms themselves gate on, but
+ * it cannot see an iPad on its own: iPadOS Safari asks for desktop sites by default
+ * and reports a macOS user agent with neither an iPad nor a Mobile token. No Mac has
+ * a touchscreen, so touch points give the iPad away. navigator.platform is
+ * deprecated but is still the only thing that distinguishes the two.
+ */
+export function isMobileDevice({ userAgent, platform, maxTouchPoints = 0 }: DeviceHints): boolean {
+  if (/Android|iPhone|iPad|iPod|Mobile/i.test(userAgent)) return true;
+  return platform === 'MacIntel' && maxTouchPoints > 1;
+}
+
+/** Whether a mirror has a web player at all, on any device. */
 export function isEmbeddable(platform: VideoPlatform): boolean {
   return embeddablePlatforms.includes(platform);
+}
+
+/**
+ * Whether a mirror can play inline on this device, rather than only linking out.
+ * The device half can only be known in the browser, so the facade decides at click
+ * time — see VideoEmbed.astro.
+ */
+export function canEmbedInline(platform: VideoPlatform, isMobile: boolean): boolean {
+  if (!isEmbeddable(platform)) return false;
+  return !(isMobile && desktopOnlyPlatforms.includes(platform));
+}
+
+/** The player URL to load in the facade's iframe once the reader hits play. */
+export function embedUrl({ platform, id }: PlatformLink): string {
+  switch (platform) {
+    case 'youtube':
+      return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
+    case 'bilibili':
+      return `https://player.bilibili.com/player.html?bvid=${id}&autoplay=1`;
+    case 'xiaohongshu':
+      return id; // no player; the facade links out to the post instead
+  }
 }
 
 export function otherPlatforms(platforms: PlatformLink[], primary: PlatformLink): PlatformLink[] {
