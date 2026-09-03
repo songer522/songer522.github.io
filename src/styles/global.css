@@ -6,6 +6,7 @@
   --muted: #696b6b;
   --border: #e5ded5;
   --accent: #b95f36;
+  --accent-ink: #9e4b2a;
   --accent-soft: #f7e8df;
   --ink: #263849;
   --badge-live: #2f7d5b;
@@ -74,9 +75,10 @@ img {
   position: sticky;
   top: 0;
   z-index: 10;
-  border-bottom: 1px solid rgb(229 222 213 / 0.8);
+  border-bottom: 1px solid var(--border);
   background: var(--surface-glass);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .site-nav .wrap {
@@ -90,7 +92,7 @@ img {
 
 .site-nav .logo {
   color: var(--ink);
-  font-family: 'Noto Serif SC', Georgia, serif;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
   font-weight: 600;
   text-decoration: none;
   font-size: 1.1rem;
@@ -192,7 +194,7 @@ img {
 /* Profile card */
 .profile-card {
   position: sticky;
-  top: 2rem;
+  top: 5rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -212,12 +214,11 @@ img {
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 1.15rem;
-  border: 3px solid rgb(255 255 255 / 0.8);
-  box-shadow: 0 5px 16px rgb(32 37 44 / 0.12);
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.8), 0 5px 16px rgb(32 37 44 / 0.12);
 }
 
 .profile-card .eyebrow {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.67rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -232,7 +233,7 @@ img {
 
 .profile-card .greeting {
   color: var(--ink);
-  font-family: 'Noto Serif SC', Georgia, serif;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
   font-size: 1.35rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
@@ -296,7 +297,7 @@ img {
 
 .section-title {
   color: var(--ink);
-  font-family: 'Noto Serif SC', Georgia, serif;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
   font-size: 1.3rem;
   font-weight: 600;
   margin: 0 0 1.25rem;
@@ -622,6 +623,10 @@ dialog.lightbox img {
   cursor: pointer;
 }
 
+.video-embed .play-button:focus-visible {
+  outline-offset: -4px;
+}
+
 .video-embed .play-button .icon {
   width: 64px;
   height: 64px;
@@ -685,66 +690,10 @@ dialog.lightbox img {
 
 .page-title {
   color: var(--ink);
-  font-family: 'Noto Serif SC', Georgia, serif;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
   font-size: 1.9rem;
   font-weight: 600;
   margin: 2rem 0 1.5rem;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .profile-card,
-  .project-card,
-  .video-strip > div,
-  .vlog:nth-child(-n + 8),
-  .detail > * {
-    animation: rise-in 500ms both cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .project-card:nth-child(2),
-  .video-strip > div:nth-child(2),
-  .vlog:nth-child(2) {
-    animation-delay: 70ms;
-  }
-
-  .project-card:nth-child(3),
-  .video-strip > div:nth-child(3),
-  .vlog:nth-child(3) {
-    animation-delay: 140ms;
-  }
-
-  .project-card:nth-child(4),
-  .video-strip > div:nth-child(4),
-  .vlog:nth-child(4) {
-    animation-delay: 210ms;
-  }
-
-  .vlog:nth-child(5) {
-    animation-delay: 280ms;
-  }
-
-  .vlog:nth-child(6) {
-    animation-delay: 350ms;
-  }
-
-  .vlog:nth-child(7) {
-    animation-delay: 420ms;
-  }
-
-  .vlog:nth-child(8) {
-    animation-delay: 490ms;
-  }
-
-  @keyframes rise-in {
-    from {
-      opacity: 0;
-      translate: 0 12px;
-    }
-
-    to {
-      opacity: 1;
-      translate: 0;
-    }
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
