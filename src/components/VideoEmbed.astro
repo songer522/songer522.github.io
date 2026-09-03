@@ -4,7 +4,7 @@ import {
   otherPlatforms,
   platformUrl,
   platformLabel,
-  isEmbeddable,
+  embedUrl,
   type PlatformLink,
 } from '../lib/video';
 import { t, type Locale } from '../i18n/utils';
@@ -23,21 +23,18 @@ const tr = t(locale);
 const primary = pickPrimaryPlatform(platforms, locale);
 const others = otherPlatforms(platforms, primary);
 
-const embeddable = isEmbeddable(primary.platform);
-
-const embedUrl =
-  primary.platform === 'youtube'
-    ? `https://www.youtube-nocookie.com/embed/${primary.id}?autoplay=1`
-    : primary.platform === 'bilibili'
-      ? `https://player.bilibili.com/player.html?bvid=${primary.id}&autoplay=1`
-      : primary.id;
+// Whether this mirror can play inline also depends on the device, which a static
+// build cannot know — the script below settles it at click time.
+const playerUrl = embedUrl(primary);
+const watchUrl = platformUrl(primary);
 
 ---
 
 <div
   class="video-embed"
-  data-embed-url={embedUrl}
-  data-embeddable={embeddable ? 'true' : 'false'}
+  data-embed-url={playerUrl}
+  data-watch-url={watchUrl}
+  data-platform={primary.platform}
   data-title={title}
 >
   <img src={cover} alt="" width="1200" height="675" />
@@ -65,6 +62,15 @@ const embedUrl =
 }
 
 <script>
+  import { canEmbedInline, type VideoPlatform } from '../lib/video';
+
+  /**
+   * Match what the platforms themselves gate on: bilibili's player.html turns these
+   * user agents away, so this is the same signal, not a viewport guess. A narrow
+   * desktop window is still a desktop.
+   */
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
   document.querySelectorAll<HTMLElement>('.video-embed').forEach((container) => {
     const button = container.querySelector('button.play-button');
     button?.addEventListener('click', () => {
@@ -72,8 +78,10 @@ const embedUrl =
       const title = container.dataset.title ?? '';
       if (!url) return;
 
-      if (container.dataset.embeddable !== 'true') {
-        window.open(url, '_blank', 'noopener');
+      const platform = container.dataset.platform as VideoPlatform | undefined;
+      if (!platform || !canEmbedInline(platform, isMobile)) {
+        // No player that works here, so send the reader somewhere that does.
+        window.open(container.dataset.watchUrl ?? url, '_blank', 'noopener');
         return;
       }
 
