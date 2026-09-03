@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "vitest run"
+    "test": "vitest run",
+    "sync:vlogs": "node scripts/sync-vlogs.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@types/node": "^26.4.1",
+    "sharp": "^0.35.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
   }

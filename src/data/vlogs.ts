@@ -2,6 +2,9 @@
 // Upload dates are not shown: most of these were uploaded in one batch, so the
 // upload date says nothing about when the thing filmed actually happened
 // ("2024 Disney Day 1" was uploaded in 2025).
+//
+// Regenerate with `npm run sync:vlogs`. Titles here are intentionally sticky: the
+// sync never overwrites one you have edited, it only reports that it has drifted.
 export interface Vlog {
   id: string;
   title: string;
