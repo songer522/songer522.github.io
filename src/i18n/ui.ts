@@ -5,10 +5,10 @@ export const defaultLocale: Locale = 'zh';
 export const ui = {
   zh: {
     'site.name': '宋二',
+    'nav.home': '首页',
     'nav.apps': '作品',
     'nav.videos': '视频',
     'nav.about': '关于',
-    'nav.blog': '博客',
     'home.featured': '我正在做的东西',
     'home.videos': '精选视频',
     'home.vlogs': '生活记录',
@@ -29,14 +29,15 @@ export const ui = {
     'video.play': '播放视频',
     'video.source': '来源',
     'video.alsoOn': '也发布在',
-    'footer.note': '© 2026 宋二 · 用 Astro 搭建',
+    'locale.switch': '切换到 English',
+    'footer.note': '© 2026 宋二 · 由 Astro、深夜和过量咖啡因驱动',
   },
   en: {
     'site.name': 'Yang',
+    'nav.home': 'Home',
     'nav.apps': 'Work',
     'nav.videos': 'Videos',
     'nav.about': 'About',
-    'nav.blog': 'Blog',
     'home.featured': "What I'm building",
     'home.videos': 'Featured videos',
     'home.vlogs': 'Vlogs',
@@ -57,6 +58,7 @@ export const ui = {
     'video.play': 'Play video',
     'video.source': 'Source',
     'video.alsoOn': 'Also on',
-    'footer.note': '© 2026 Yang · Built with Astro',
+    'locale.switch': '切换到中文',
+    'footer.note': '© 2026 Yang · Powered by Astro, late nights, and too much caffeine',
   },
 } as const;
