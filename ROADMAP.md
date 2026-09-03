@@ -1,12 +1,12 @@
 # Roadmap — after the withastro/action v6 upgrade
 
-Status as of 2026-09-02: the site is **live** at https://songer522.github.io/ and the
-first deploy is green. Structure is complete and bilingual; **all content is
-placeholder**. The v6 action upgrade is queued as its own session and is not covered
-here.
+Status as of 2026-09-02 (end of `feature/phase2.2`): the site is **live** at
+https://songer522.github.io/ and the first deploy is green. Structure is complete and
+bilingual, and **Phase 2 content is now real** — every placeholder is gone from both
+collections. The v6 action upgrade is queued as its own session and is not covered here.
 
-Everything below was verified against the repo at `a44abc3`, not assumed. Each item
-states the evidence.
+Everything below was verified against the repo, not assumed. Each item states the
+evidence.
 
 ---
 
@@ -102,25 +102,48 @@ builds indie apps, records life on camera), real tags (独立开发/Indie dev,
 RedNote (小红书), Weibo, and Email (`mailto:`). No `og:image` or schema change was
 needed here since the avatar is a static `<img>`, not a content-collection field.
 
-Still open:
-- For each app: title, one-line summary, status, tags, cover screenshot, and real
-  links.
-- For each video: title, summary, the platform mirrors it exists on, cover, publish
-  date.
+Apps and videos have since been supplied too — see 2.2.
 
-### 2.2 Replace placeholder entries
+### 2.2 Replace placeholder entries — **DONE (2026-09-02)**
 
-Delete the six `placeholder-app-*` and six `placeholder-video-*` files as real entries
-replace them. Keep the locale-parity invariant intact: **every slug must exist in both
-`zh/` and `en/`** — `tests/locale-parity.test.ts` enforces this and will fail the build
-otherwise. That test is doing real work here; do not weaken it to unblock a
-half-translated entry.
+All twelve placeholder files are gone. Both collections are entirely real, in both
+locales, and the locale-parity invariant held throughout — no slug ever existed in one
+language only.
 
-### 2.3 Migrate `cover` to Astro's `image()` — only after real images exist
+**Apps (4):**
 
-`src/content.config.ts` types `cover` as `z.string()` deliberately, because the
-placeholders are SVGs in `public/`. Once real raster screenshots land, move them to
-`src/assets/` and switch to:
+| Slug | Status | Notes |
+| :--- | :--- | :--- |
+| `rewind` | live | Rewind: Memories on This Day. App Store + GitHub. |
+| `cochleo` | live | Listening practice for cochlear implant users. Copy is deliberately descriptive — no claims about hearing outcomes. |
+| `track-lapse` | wip | 2012 cocos2d game being restored. GitHub only; the company behind it no longer exists and the game is off the App Store. States facts, claims no rights. |
+| `fun-collages` | free-tool | Early work, App Store only. Cover is generated rather than taken from the listing's screenshots, which are full of identifiable family photos. |
+
+**Videos (3):** `chicago-city-walk`, `day-in-the-life`, `iphone-vs-full-frame`. Each
+lists its bilibili mirror alongside YouTube, so `src/lib/video.ts` picks a player by
+locale — bilibili for zh, YouTube for en. BV ids were matched to the YouTube originals
+on duration, title and cover, not guessed.
+
+**Caveat worth keeping visible:** the Chinese copy across all seven entries was drafted
+by Claude from repo READMEs and App Store listings, then reviewed by Yang — it is not
+originally his writing. The one exception is Rewind's 「为什么做这个」 line, which is
+verbatim his.
+
+Work not in the original roadmap that landed alongside it: a lightbox for in-body
+images, the Vlogs section (61 videos from an unlisted playlist, `noindex` and
+sitemap-excluded), `npm run sync:vlogs` to maintain it, and 宋二 as the zh site name.
+
+### 2.3 Migrate `cover` to Astro's `image()` — **UNBLOCKED, not done**
+
+Every cover is now a real raster in `public/images/` (PNG for apps, JPEG for videos),
+so the reason this was deferred is gone. Note the scope grew: there are now app covers,
+video covers, in-body screenshots on two detail pages, and 61 vlog thumbnails, though
+the vlog grid is a plain data file rather than a content collection and would need
+handling separately.
+
+`src/content.config.ts` types `cover` as `z.string()`, which was deliberate while the
+placeholders were SVGs in `public/`. To migrate, move them to `src/assets/` and switch
+to:
 
 ```ts
 import { defineCollection, z } from 'astro:content';
@@ -132,11 +155,12 @@ responsive `srcset` — all of which matter a lot for a screenshot-heavy portfol
 none of which work on `public/` SVGs. Update `ProjectCard.astro` and the detail pages
 to render `<Image />` instead of `<img>`.
 
-### 2.4 Tighten the schema once placeholders are gone
+### 2.4 Tighten the schema once placeholders are gone — **UNBLOCKED, not done**
 
-`links[].url` is `z.string()` because placeholders use `"#"`. Once real URLs are in,
-change it to `z.string().url()` so a malformed link fails the build instead of shipping.
-Do this **after** 2.2, not before — it will reject every placeholder.
+`links[].url` is still `z.string()`. The blocker is gone: `grep -rn 'url: *"#"'
+src/content/` returns nothing, so changing it to `z.string().url()` would pass today and
+make a malformed link fail the build instead of shipping. A one-line change in
+`src/content.config.ts`.
 
 ### 2.5 Optional guard: report remaining placeholders — **DONE (2026-09-02)**
 
@@ -206,9 +230,13 @@ static default working — it is an optimization of a solved problem, not a subs
 
 ## Suggested sequencing
 
-1. **Now, in parallel:** Phase 1 as one PR (independent of Yang), and Yang starts
-   gathering Phase 2 material.
-2. **Then:** the v6 action upgrade (its own session, already prepped).
-3. **Then:** Phase 2, incrementally — one real project at a time is fine, since parity
-   is enforced per-slug.
-4. **Then:** revisit Phase 3 with real traffic and real content to reason about.
+Phase 1 and Phase 2 are both done. What is left, cheapest first:
+
+1. **2.4** — one line, unblocked, nothing currently violates it.
+2. **2.5's switch** — flip `FAIL_ON_PLACEHOLDERS` to `true` in
+   `tests/placeholder-guard.test.ts`. The guard reports zero today, so this turns a
+   report into an enforced invariant.
+3. **The v6 action upgrade** — its own session, already prepped.
+4. **2.3** — the `image()` migration; the largest of these, and the one with real
+   payoff for a screenshot-heavy site.
+5. **Phase 3** — revisit with real traffic and real content to reason about.
