@@ -1,16 +1,19 @@
 :root {
-  --bg: #f7f4ef;
-  --surface: #ffffff;
-  --text: #1b1917;
-  --muted: #6b6560;
-  --border: #e5dfd6;
-  --accent: #c2703d;
-  --accent-soft: #fbede3;
+  --bg: #f8f5f0;
+  --surface: #fff;
+  --surface-glass: rgb(248 245 240 / 0.86);
+  --text: #20252c;
+  --muted: #696b6b;
+  --border: #e5ded5;
+  --accent: #b95f36;
+  --accent-ink: #9e4b2a;
+  --accent-soft: #f7e8df;
+  --ink: #263849;
   --badge-live: #2f7d5b;
   --badge-wip: #b07c2a;
-  --badge-tool: #c2703d;
-  --radius: 14px;
-  --shadow: 0 1px 2px rgb(27 25 23 / 0.04), 0 8px 24px rgb(27 25 23 / 0.06);
+  --badge-tool: var(--accent);
+  --radius: 18px;
+  --shadow: 0 1px 2px rgb(32 37 44 / 0.03), 0 12px 30px rgb(65 50 39 / 0.055);
   --maxw: 1120px;
 }
 
@@ -27,9 +30,13 @@ body {
 }
 
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 8% 0%, rgb(218 189 167 / 0.24), transparent 26rem),
+    radial-gradient(circle at 96% 18%, rgb(201 216 215 / 0.2), transparent 28rem),
+    var(--bg);
   color: var(--text);
   font-family:
+    'DM Sans',
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
@@ -38,12 +45,18 @@ body {
     'Microsoft YaHei',
     'Noto Sans SC',
     sans-serif;
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 
 a {
   color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 img {
@@ -59,8 +72,13 @@ img {
 
 /* Nav */
 .site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   border-bottom: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .site-nav .wrap {
@@ -73,7 +91,9 @@ img {
 }
 
 .site-nav .logo {
-  font-weight: 700;
+  color: var(--ink);
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
+  font-weight: 600;
   text-decoration: none;
   font-size: 1.1rem;
 }
@@ -89,10 +109,31 @@ img {
   text-decoration: none;
   color: var(--muted);
   font-size: 0.95rem;
+  position: relative;
 }
 
-.site-nav .links a:hover {
+.site-nav .links a::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -0.35rem;
+  left: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 180ms ease;
+}
+
+.site-nav .links a:hover,
+.site-nav .links a:focus-visible {
   color: var(--text);
+}
+
+.site-nav .links a:hover::after,
+.site-nav .links a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .locale-switch {
@@ -139,8 +180,8 @@ img {
 .home-layout {
   display: grid;
   grid-template-columns: minmax(240px, 320px) 1fr;
-  gap: 3rem;
-  padding: 2.5rem 0 3rem;
+  gap: 3.5rem;
+  padding: 3.25rem 0 3.5rem;
   align-items: start;
 }
 
@@ -153,11 +194,11 @@ img {
 /* Profile card */
 .profile-card {
   position: sticky;
-  top: 2rem;
+  top: 5rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.5rem;
+  padding: 1.75rem;
   box-shadow: var(--shadow);
 }
 
@@ -168,12 +209,20 @@ img {
 }
 
 .profile-card .avatar {
-  width: 88px;
-  height: 88px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
   overflow: hidden;
-  margin-bottom: 1rem;
-  border: 1px solid var(--border);
+  margin-bottom: 1.15rem;
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.8), 0 5px 16px rgb(32 37 44 / 0.12);
+}
+
+.profile-card .eyebrow {
+  color: var(--accent-ink);
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin: 0 0 1.25rem;
 }
 
 .profile-card .avatar img {
@@ -183,8 +232,10 @@ img {
 }
 
 .profile-card .greeting {
-  font-size: 1.15rem;
-  font-weight: 700;
+  color: var(--ink);
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 600;
   margin: 0 0 0.5rem;
 }
 
@@ -222,6 +273,13 @@ img {
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.3rem 0.7rem;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.profile-card .socials a:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
 }
 
 /* Project grid + cards */
@@ -238,8 +296,10 @@ img {
 }
 
 .section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
+  color: var(--ink);
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
   margin: 0 0 1.25rem;
 }
 
@@ -253,11 +313,13 @@ img {
   box-shadow: var(--shadow);
   text-decoration: none;
   color: var(--text);
-  transition: transform 0.15s ease;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
 
 .project-card:hover {
-  transform: translateY(-2px);
+  border-color: rgb(185 95 54 / 0.35);
+  box-shadow: 0 4px 9px rgb(32 37 44 / 0.04), 0 18px 34px rgb(65 50 39 / 0.11);
+  transform: translateY(-4px);
 }
 
 .project-card .cover {
@@ -269,6 +331,11 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 350ms ease;
+}
+
+.project-card:hover .cover img {
+  transform: scale(1.025);
 }
 
 .project-card .body {
@@ -276,6 +343,7 @@ img {
 }
 
 .project-card .title {
+  color: var(--ink);
   font-weight: 700;
   margin: 0 0 0.35rem;
 }
@@ -384,6 +452,12 @@ img {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.vlog:hover {
+  box-shadow: 0 4px 9px rgb(32 37 44 / 0.04), 0 18px 34px rgb(65 50 39 / 0.11);
+  transform: translateY(-4px);
 }
 
 .vlog img {
@@ -452,7 +526,7 @@ dialog.lightbox {
   padding: 0;
   border: none;
   border-radius: var(--radius);
-  background: var(--surface);
+  background: #fff;
   overflow: hidden;
 }
 
@@ -476,7 +550,7 @@ dialog.lightbox img {
   font-size: 1.4rem;
   line-height: 1;
   color: var(--text);
-  background: var(--surface);
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: 50%;
   cursor: pointer;
@@ -525,6 +599,7 @@ dialog.lightbox img {
   height: 100%;
   object-fit: cover;
   opacity: 0.85;
+  transition: transform 350ms ease, opacity 350ms ease;
 }
 
 .video-embed iframe {
@@ -548,6 +623,10 @@ dialog.lightbox img {
   cursor: pointer;
 }
 
+.video-embed .play-button:focus-visible {
+  outline-offset: -4px;
+}
+
 .video-embed .play-button .icon {
   width: 64px;
   height: 64px;
@@ -558,6 +637,17 @@ dialog.lightbox img {
   justify-content: center;
   color: var(--accent);
   font-size: 1.5rem;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.video-embed:hover img {
+  opacity: 1;
+  transform: scale(1.025);
+}
+
+.video-embed:hover .play-button .icon {
+  background: #fff;
+  transform: scale(1.08);
 }
 
 /* Video strip */
@@ -599,6 +689,62 @@ dialog.lightbox img {
 }
 
 .page-title {
-  font-size: 1.6rem;
+  color: var(--ink);
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
+  font-size: 1.9rem;
+  font-weight: 600;
   margin: 2rem 0 1.5rem;
+}
+
+/* Scroll-driven entrance motion, touch only: desktop has hover affordances
+   that a touch screen can never fire. The @supports gate keeps browsers
+   without view() timelines from ever seeing the opacity: 0 start state. */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Longhands, not the `animation` shorthand: the minifier folds a
+       shorthand plus a timeline into `animation: ... view()`, a form some
+       engines reject outright, which would silently drop the whole rule. */
+    .project-card,
+    .video-strip > div,
+    .vlog {
+      animation-name: rise-in;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        translate: 0 16px;
+      }
+
+      to {
+        opacity: 1;
+        translate: 0;
+      }
+    }
+  }
+}
+
+@media print {
+  .project-card,
+  .video-strip > div,
+  .vlog {
+    animation: none !important;
+    opacity: 1 !important;
+    translate: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
