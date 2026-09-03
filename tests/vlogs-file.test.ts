@@ -35,6 +35,25 @@ describe('vlogs file', () => {
     expect(parseVlogs(renderVlogs(parseVlogs(real), url))).toEqual(parseVlogs(real));
   });
 
+  it('round-trips dates, and entries that have none', () => {
+    const vlogs = [
+      { id: 'a', title: 'A', date: '2024-08-24' },
+      { id: 'b', title: 'B' },
+    ];
+
+    expect(parseVlogs(renderVlogs(vlogs, 'https://example.com/?list=L'))).toEqual(vlogs);
+  });
+
+  it('gives every committed entry a date', () => {
+    expect(parseVlogs(real).filter((v) => !v.date)).toEqual([]);
+  });
+
+  it('holds the committed file in newest-first order', () => {
+    const dates = parseVlogs(real).map((v) => v.date);
+
+    expect(dates).toEqual([...dates].sort().reverse());
+  });
+
   it('refuses to parse an entry shape it does not recognise', () => {
     const bad = real.replace("{ id: '", "{ ident: '");
 

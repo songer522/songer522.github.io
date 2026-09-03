@@ -19,6 +19,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 
 import { mergeVlogs, resolveUnavailable } from './lib/merge-vlogs.mjs';
+import { parseVlogDate, sortByDate } from './lib/vlog-date.mjs';
 import { parseVlogs, renderVlogs, playlistIdFrom } from './lib/vlogs-file.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -83,7 +84,8 @@ async function fetchPlaylist(playlistId, key) {
       // title and no usable thumbnail. Flag rather than drop, so resolveUnavailable
       // can tell them apart from a video actually removed from the playlist.
       const unavailable = title === 'Deleted video' || title === 'Private video';
-      items.push({ id, title, unavailable });
+      const date = parseVlogDate(item.snippet?.description) ?? undefined;
+      items.push({ id, title, date, unavailable });
     }
 
     pageToken = body.nextPageToken ?? '';
@@ -138,13 +140,26 @@ async function main() {
   const { items: fetched, held } = resolveUnavailable(raw, existing);
   if (fetched.length === 0) throw new Error('the playlist returned no usable videos — refusing to empty the file');
 
-  const { vlogs, added, removed, drifted } = mergeVlogs(existing, fetched);
+  const merged = mergeVlogs(existing, fetched);
+  const { added, removed, drifted, redated } = merged;
+  const vlogs = sortByDate(merged.vlogs);
 
   console.log(`playlist ${playlistId}: ${fetched.length} videos`);
   console.log(`local file: ${existing.length} -> ${vlogs.length}`);
 
-  for (const v of added) console.log(`  + ${v.id}  ${v.title}`);
+  const undated = vlogs.filter((v) => !v.date);
+  if (undated.length) {
+    console.log(`\n${undated.length} video(s) have no \`Date:\` line in the description, so they`);
+    console.log('sort to the end of the list:');
+    for (const v of undated) console.log(`  ?  ${v.id}  ${v.title}`);
+    console.log('');
+  }
+
+  for (const v of added) console.log(`  + ${v.id}  ${v.date ?? 'no date'}  ${v.title}`);
   for (const v of removed) console.log(`  - ${v.id}  ${v.title}`);
+  for (const d of redated) {
+    console.log(`  @ ${d.id}  date ${d.from ?? 'none'} -> ${d.to}  ${d.title}`);
+  }
   for (const id of held) {
     console.log(`  ?  ${id}  deleted or private on YouTube — entry and title kept`);
   }

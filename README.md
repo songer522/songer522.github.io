@@ -112,25 +112,38 @@ YOUTUBE_API_KEY=AIza...
 `.env` is gitignored. The free quota is 10,000 units/day and a sync costs about 1.
 
 **What it does.** Adds videos new to the playlist, drops ones removed from it, fetches
-thumbnails for new ids only (trimming YouTube's letterboxing), and keeps playlist order.
+thumbnails for new ids only (trimming YouTube's letterboxing), and sorts the list newest
+first by filming date.
+
+**That date comes from the video's YouTube description**, which has to contain a line
+like `Date: 2024.08.24`; it is shown under the title on the site. The upload date is no
+use for ordering — most of this playlist went up in one batch, so uploads cluster in 2025
+while the footage spans years. A video whose description has no such line still appears,
+undated, at the end of the list, and the sync says so.
 
 **What it deliberately won't do:**
 
 | Situation | Behaviour |
 | :--- | :--- |
 | You renamed a title in `vlogs.ts` | Keeps yours forever; reports the drift so you can decide |
+| You edited a date in `vlogs.ts` | Overwrites it from the description — edit the date on YouTube |
 | Playlist returns nothing | Refuses to write, so an API blip can't wipe the section |
 | An entry it can't parse | Stops, rather than rewriting your hand edits away |
 | Video deleted or made private | Skips it — those keep a playlist slot with a placeholder title |
 | Thumbnail left over from a removed video | Reports it; deleting is your call |
+
+Dates are the one thing that works the other way round, because the description is where
+you edit them and there is no privacy reason to hold a local value. A stored date does
+survive if the description stops parsing, so a typo there cannot silently unsort the list.
 
 That first row is the important one: **titles in `vlogs.ts` are yours to edit.** Several
 videos are titled in bare emoji on YouTube and read better renamed here, and some name
 family members you may not want on a public page. Rename them in `vlogs.ts` — the sync
 will preserve it and leave YouTube untouched.
 
-The merge rules (`scripts/lib/merge-vlogs.mjs`) and the file parser
-(`scripts/lib/vlogs-file.mjs`) are pure and unit-tested; the network and image work stays
+The merge rules (`scripts/lib/merge-vlogs.mjs`), the file parser
+(`scripts/lib/vlogs-file.mjs`) and the date parsing and ordering
+(`scripts/lib/vlog-date.mjs`) are pure and unit-tested; the network and image work stays
 in `scripts/sync-vlogs.mjs`.
 
 ## `cover` → `image()` migration

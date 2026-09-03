@@ -401,7 +401,24 @@ img {
   line-height: 1.4;
 }
 
-.vlog:hover p {
+/* With a date under it, the title gives up its bottom padding to the date line. */
+.vlog .vlog-title:has(+ .vlog-date) {
+  padding-bottom: 0.2rem;
+}
+
+.vlog .vlog-date,
+.video-date {
+  padding-top: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.video-date {
+  margin: 0.2rem 0 0;
+}
+
+.vlog:hover .vlog-title {
   color: var(--accent);
 }
 

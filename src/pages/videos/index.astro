@@ -18,7 +18,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
 ---
 
 <BaseLayout title={tr('videos.title')} description={tr('videos.title')} locale={locale}>
-  <h1 class="page-title">{tr('videos.title')}</h1>
+  <h1 class="section-title" style="margin-top: 2rem;">{tr('home.videos')}</h1>
   <div class="project-grid">
     {
       videos.map((video) => (
