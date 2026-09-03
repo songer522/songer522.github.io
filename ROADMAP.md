@@ -120,10 +120,13 @@ language only.
 | `track-lapse` | wip | 2012 cocos2d game being restored. GitHub only; the company behind it no longer exists and the game is off the App Store. States facts, claims no rights. |
 | `fun-collages` | free-tool | Early work, App Store only. Cover is generated rather than taken from the listing's screenshots, which are full of identifiable family photos. |
 
-**Videos (3):** `chicago-city-walk`, `day-in-the-life`, `iphone-vs-full-frame`. Each
-lists its bilibili mirror alongside YouTube, so `src/lib/video.ts` picks a player by
-locale — bilibili for zh, YouTube for en. BV ids were matched to the YouTube originals
-on duration, title and cover, not guessed.
+**Videos (4):** `chicago-city-walk`, `tom-and-jerry`, `we-are-the-world`,
+`iphone-vs-full-frame`. The first and last list a bilibili mirror alongside YouTube, so
+`src/lib/video.ts` picks a player by locale — bilibili for zh, YouTube for en; their BV
+ids were matched to the YouTube originals on duration, title and cover, not guessed. The
+two middle entries are bilibili-only, so both locales play bilibili and both link out on
+mobile. `day-in-the-life` was retired from this list; the same upload is in the vlog
+playlist, so it now shows under Vlogs instead and that section went 60 -> 61.
 
 **Caveat worth keeping visible:** the Chinese copy across all seven entries was drafted
 by Claude from repo READMEs and App Store listings, then reviewed by Yang — it is not

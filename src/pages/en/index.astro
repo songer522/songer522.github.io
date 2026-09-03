@@ -21,7 +21,7 @@ const apps = (await getCollection('apps', ({ id }) => localeOf(id) === locale))
 
 const videos = (await getCollection('videos', ({ id }) => localeOf(id) === locale))
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
-  .slice(0, 3);
+  .slice(0, 4);
 ---
 
 <BaseLayout title={tr('site.name')} description={tr('home.featured')} locale={locale}>

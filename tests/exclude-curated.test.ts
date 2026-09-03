@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 
 import { excludeCurated, youTubeIdsFrom } from '../src/lib/vlogs';
 import { parseVlogs } from '../scripts/lib/vlogs-file.mjs';
 
 const v = (id: string, title: string) => ({ id, title });
+
+/** The youtube mirrors named by the videos collection, read straight off the markdown. */
+function curatedYouTubeIds(dir: string): Set<string> {
+  const ids = readdirSync(dir)
+    .filter((f) => f.endsWith('.md'))
+    .flatMap((f) => [...readFileSync(path.join(dir, f), 'utf8').matchAll(/platform: youtube, id: (\S+?) \}/g)])
+    .map((m) => m[1]);
+  return new Set(ids);
+}
 
 describe('youTubeIdsFrom', () => {
   it('collects only the youtube mirrors', () => {
@@ -41,13 +50,17 @@ describe('excludeCurated', () => {
     expect(excludeCurated(vlogs, new Set())).toEqual(vlogs);
   });
 
-  it('removes the real overlap in the committed data', () => {
-    // day-in-the-life.md mirrors this id, and it is also in the vlog playlist.
+  it('drops whatever the committed data actually has in both places', () => {
+    // Derived rather than hard-coded: the two lists are edited independently, so an
+    // overlap can appear or disappear with any content change. Today there is none.
     const root = process.cwd();
     const vlogs = parseVlogs(readFileSync(path.join(root, 'src/data/vlogs.ts'), 'utf8'));
-    const curated = new Set(['kI9aVHS7jRw']);
+    const curated = curatedYouTubeIds(path.join(root, 'src/content/videos/zh'));
+    const overlap = vlogs.filter((x) => curated.has(x.id));
 
-    expect(vlogs.some((x) => x.id === 'kI9aVHS7jRw')).toBe(true);
-    expect(excludeCurated(vlogs, curated)).toHaveLength(vlogs.length - 1);
+    const kept = excludeCurated(vlogs, curated);
+
+    expect(kept).toHaveLength(vlogs.length - overlap.length);
+    expect(kept.some((x) => curated.has(x.id))).toBe(false);
   });
 });
