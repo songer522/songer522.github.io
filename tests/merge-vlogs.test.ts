@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { mergeVlogs } from '../scripts/lib/merge-vlogs.mjs';
 
 const v = (id: string, title: string) => ({ id, title });
+const d = (id: string, title: string, date?: string) => ({ id, title, date });
 
 describe('mergeVlogs', () => {
   it('adds videos that are new to the playlist', () => {
@@ -71,5 +72,37 @@ describe('mergeVlogs', () => {
     expect(result.added).toEqual([]);
     expect(result.removed).toEqual([]);
     expect(result.drifted).toEqual([]);
+  });
+});
+
+describe('mergeVlogs dates', () => {
+  it('takes the date from the description, unlike the title', () => {
+    const result = mergeVlogs([d('a', 'my title', '2024-01-01')], [d('a', 'their title', '2024-05-05')]);
+
+    expect(result.vlogs).toEqual([d('a', 'my title', '2024-05-05')]);
+    expect(result.redated).toEqual([{ id: 'a', title: 'my title', from: '2024-01-01', to: '2024-05-05' }]);
+  });
+
+  it('keeps the stored date when the description has stopped supplying one', () => {
+    const result = mergeVlogs([d('a', 'A', '2024-01-01')], [d('a', 'A', undefined)]);
+
+    expect(result.vlogs).toEqual([d('a', 'A', '2024-01-01')]);
+    expect(result.redated).toEqual([]);
+  });
+
+  it('reports nothing when the date has not moved', () => {
+    expect(mergeVlogs([d('a', 'A', '2024-01-01')], [d('a', 'A', '2024-01-01')]).redated).toEqual([]);
+  });
+
+  it('carries the date onto a newly added video', () => {
+    const result = mergeVlogs([], [d('a', 'A', '2024-01-01')]);
+
+    expect(result.added).toEqual([d('a', 'A', '2024-01-01')]);
+  });
+
+  it('reports a first-ever date as a change from none', () => {
+    const result = mergeVlogs([v('a', 'A')], [d('a', 'A', '2024-01-01')]);
+
+    expect(result.redated).toEqual([{ id: 'a', title: 'A', from: undefined, to: '2024-01-01' }]);
   });
 });

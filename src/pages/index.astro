@@ -6,7 +6,7 @@ import ProjectGrid from '../components/ProjectGrid.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import VideoEmbed from '../components/VideoEmbed.astro';
 import { vlogs as allVlogs } from '../data/vlogs';
-import { excludeCurated, youTubeIdsFrom } from '../lib/vlogs';
+import { excludeCurated, formatVlogDate, youTubeIdsFrom } from '../lib/vlogs';
 import { t, localeOf, slugOf } from '../i18n/utils';
 
 const locale = 'zh';
@@ -77,6 +77,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
                 playLabel={tr('video.play')}
               />
               <p class="video-title">{vlog.title}</p>
+              {vlog.date && <p class="video-date">{formatVlogDate(vlog.date)}</p>}
             </div>
           ))
         }

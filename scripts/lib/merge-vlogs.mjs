@@ -1,6 +1,7 @@
 /**
- * @typedef {{ id: string, title: string }} Vlog
+ * @typedef {{ id: string, title: string, date?: string }} Vlog
  * @typedef {{ id: string, local: string, remote: string }} Drift
+ * @typedef {{ id: string, title: string, from?: string, to: string }} DateChange
  */
 
 /**
@@ -12,7 +13,7 @@
  * to keep someone's name off a public page. So a video we already know is held at its
  * local title; one we have never seen is dropped, since there is nothing to show.
  *
- * @param {{ id: string, title: string, unavailable?: boolean }[]} items playlist order
+ * @param {{ id: string, title: string, date?: string, unavailable?: boolean }[]} items playlist order
  * @param {Vlog[]} existing entries currently in the file
  * @returns {{ items: Vlog[], held: string[] }} `held` is for warning the operator
  */
@@ -23,12 +24,14 @@ export function resolveUnavailable(items, existing) {
 
   for (const item of items) {
     if (!item.unavailable) {
-      resolved.push({ id: item.id, title: item.title });
+      resolved.push({ id: item.id, title: item.title, date: item.date });
       continue;
     }
     const local = byId.get(item.id);
     if (!local) continue;
-    resolved.push({ id: local.id, title: local.title });
+    // An unavailable video has no readable description either, so its date is held
+    // alongside its title.
+    resolved.push({ id: local.id, title: local.title, date: local.date });
     held.push(local.id);
   }
 
@@ -43,9 +46,15 @@ export function resolveUnavailable(items, existing) {
  * and read better renamed here. A title that has since changed upstream is
  * reported as drift for a human to judge, never silently applied.
  *
+ * Dates work the other way round. They come from the description, which is where
+ * they are edited, and there is no privacy reason to hold a local value — so the
+ * fetched date wins and the change is reported rather than held. A date already in
+ * the file survives only when the description has stopped supplying one, so that a
+ * description typo cannot silently unsort the list.
+ *
  * @param {Vlog[]} existing entries currently in src/data/vlogs.ts
  * @param {Vlog[]} fetched entries from the playlist, in playlist order
- * @returns {{ vlogs: Vlog[], added: Vlog[], removed: Vlog[], drifted: Drift[] }}
+ * @returns {{ vlogs: Vlog[], added: Vlog[], removed: Vlog[], drifted: Drift[], redated: DateChange[] }}
  */
 export function mergeVlogs(existing, fetched) {
   const byId = new Map(existing.map((v) => [v.id, v]));
@@ -54,6 +63,7 @@ export function mergeVlogs(existing, fetched) {
   const vlogs = [];
   const added = [];
   const drifted = [];
+  const redated = [];
   // A playlist can hold the same video twice; keep the first appearance only, or the
   // site renders duplicate cards and downloads the thumbnail twice.
   const seen = new Set();
@@ -64,17 +74,23 @@ export function mergeVlogs(existing, fetched) {
 
     const local = byId.get(remote.id);
     if (!local) {
-      vlogs.push({ id: remote.id, title: remote.title });
-      added.push({ id: remote.id, title: remote.title });
+      const entry = { id: remote.id, title: remote.title, date: remote.date };
+      vlogs.push(entry);
+      added.push(entry);
       continue;
     }
-    vlogs.push({ id: local.id, title: local.title });
+
+    const date = remote.date ?? local.date;
+    vlogs.push({ id: local.id, title: local.title, date });
     if (local.title !== remote.title) {
       drifted.push({ id: local.id, local: local.title, remote: remote.title });
+    }
+    if (date !== local.date) {
+      redated.push({ id: local.id, title: local.title, from: local.date, to: date });
     }
   }
 
   const removed = existing.filter((v) => !fetchedIds.has(v.id));
 
-  return { vlogs, added, removed, drifted };
+  return { vlogs, added, removed, drifted, redated };
 }

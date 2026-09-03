@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 
-import { excludeCurated, youTubeIdsFrom } from '../src/lib/vlogs';
+import { excludeCurated, formatVlogDate, youTubeIdsFrom } from '../src/lib/vlogs';
 import { parseVlogs } from '../scripts/lib/vlogs-file.mjs';
 
 const v = (id: string, title: string) => ({ id, title });
@@ -62,5 +62,15 @@ describe('excludeCurated', () => {
 
     expect(kept).toHaveLength(vlogs.length - overlap.length);
     expect(kept.some((x) => curated.has(x.id))).toBe(false);
+  });
+});
+
+describe('formatVlogDate', () => {
+  it('renders the stored date the way the descriptions write it', () => {
+    expect(formatVlogDate('2024-08-24')).toBe('2024.08.24');
+  });
+
+  it('keeps the leading zeroes, so the column stays aligned', () => {
+    expect(formatVlogDate('2024-03-07')).toBe('2024.03.07');
   });
 });
