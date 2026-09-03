@@ -6,10 +6,9 @@ interface Props {
   status?: 'live' | 'wip' | 'free-tool';
   statusLabel?: string;
   cover?: string;
-  cta: string;
 }
 
-const { href, title, summary, status, statusLabel, cover, cta } = Astro.props;
+const { href, title, summary, status, statusLabel, cover } = Astro.props;
 ---
 
 <a class="project-card" href={href}>
@@ -24,6 +23,6 @@ const { href, title, summary, status, statusLabel, cover, cta } = Astro.props;
   <div class="body">
     <p class="title">{title}</p>
     <p class="summary">{summary}</p>
-    <span class="cta">{cta} →</span>
+    <span class="cta" aria-hidden="true">→</span>
   </div>
 </a>

@@ -18,8 +18,24 @@ const enPath = switchLocalePath(Astro.url.pathname, 'en');
 
 <nav class="site-nav">
   <div class="wrap">
-    <a class="logo" href={home}>{tr('site.name')}</a>
+    <a class="logo" href={home} aria-label={tr('site.name')}>
+      <svg viewBox="0 0 64 32" width="60" height="30" aria-hidden="true" focusable="false" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <g class="roof">
+          <path d="M16 3.5v2.4" />
+          <path d="M6.8 15V11H25.2v4.8" />
+        </g>
+        <g class="wood">
+          <path d="M5 19.6h18" />
+          <path d="M14 15.8V29" />
+          <path d="M14 21.6 7.2 28.6" />
+          <path d="M14 21.6 20.8 28.6" />
+        </g>
+        <path class="bar bar-top" d="M11.5 20.8h9" />
+        <path class="bar bar-bottom" d="M8.5 26.2h15" />
+      </svg>
+    </a>
     <div class="links">
+      <a href={home}>{tr('nav.home')}</a>
       <a href={appsHref}>{tr('nav.apps')}</a>
       <a href={videosHref}>{tr('nav.videos')}</a>
       <a href={aboutHref}>{tr('nav.about')}</a>
@@ -31,3 +47,39 @@ const enPath = switchLocalePath(Astro.url.pathname, 'en');
     </div>
   </div>
 </nav>
+
+<script>
+  /* Touch devices get no hover. A tap follows the link home like any other
+     link; the animation is handed to the page we land on via sessionStorage
+     and plays there on arrival, holding for 5s like the desktop hover. */
+  const SPELL_KEY = 'nav-logo-spell';
+  const logo = document.querySelector<HTMLAnchorElement>('.site-nav .logo');
+
+  if (logo && window.matchMedia('(hover: none)').matches) {
+    logo.addEventListener('click', () => {
+      try {
+        sessionStorage.setItem(SPELL_KEY, '1');
+      } catch {
+        /* Private mode or blocked storage: the tap still navigates. */
+      }
+    });
+
+    let queued = false;
+
+    try {
+      queued = sessionStorage.getItem(SPELL_KEY) === '1';
+      sessionStorage.removeItem(SPELL_KEY);
+    } catch {
+      queued = false;
+    }
+
+    if (queued) {
+      /* Next frame, so the class change transitions instead of painting
+         straight into the spelled-out state. */
+      requestAnimationFrame(() => {
+        logo.classList.add('is-spelled');
+        window.setTimeout(() => logo.classList.remove('is-spelled'), 5000);
+      });
+    }
+  }
+</script>
