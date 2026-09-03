@@ -78,9 +78,10 @@ so each URL in `sitemap-0.xml` carries `xhtml:link rel="alternate"` entries for
 both locales. These codes (`zh-CN` / `en`) match `<html lang>` and the page-level
 `hreflang` tags in `BaseLayout.astro` exactly — a review caught the initial
 mismatch (`en-US` in the sitemap vs `en` on the page), fixed 2026-09-01.
-`public/robots.txt` points at `https://songer522.github.io/sitemap-index.xml` and
-adds no `Disallow` rules, so it makes no crawl-policy decisions for the separate
-`/blog/` repo. Verified via `npm run build` (inspected `dist/sitemap-0.xml` and
+`public/robots.txt` points at `https://songer522.github.io/sitemap-index.xml`. It
+carries one `Disallow`, added later for `/images/vlogs/` (see 2.2) to keep unlisted
+vlog thumbnails out of image search; it is scoped to that directory and still makes
+no crawl-policy decisions for the separate `/blog/` repo. Verified via `npm run build` (inspected `dist/sitemap-0.xml` and
 `dist/robots.txt` directly) and `npm test`.
 
 ---

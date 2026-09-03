@@ -1,1 +1,8 @@
+User-agent: *
+# Vlog thumbnails come from an unlisted YouTube playlist. /vlogs/ is noindex and out of
+# the sitemap, but a handful are also linked from indexable pages, so keep the images
+# themselves out of image search. Scoped to this directory only — no other crawl policy
+# is expressed here, and nothing under /blog/ (a separate repo) is affected.
+Disallow: /images/vlogs/
+
 Sitemap: https://songer522.github.io/sitemap-index.xml
