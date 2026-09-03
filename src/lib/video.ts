@@ -46,6 +46,27 @@ export function pickPrimaryPlatform(platforms: PlatformLink[], locale: Locale): 
   return platforms[0];
 }
 
+/** The bits of `navigator` that say whether we are on a phone or tablet. */
+export interface DeviceHints {
+  userAgent: string;
+  platform?: string;
+  maxTouchPoints?: number;
+}
+
+/**
+ * Whether to treat this device as mobile for the purpose of picking a player.
+ *
+ * Matching the user agent is the same signal the platforms themselves gate on, but
+ * it cannot see an iPad on its own: iPadOS Safari asks for desktop sites by default
+ * and reports a macOS user agent with neither an iPad nor a Mobile token. No Mac has
+ * a touchscreen, so touch points give the iPad away. navigator.platform is
+ * deprecated but is still the only thing that distinguishes the two.
+ */
+export function isMobileDevice({ userAgent, platform, maxTouchPoints = 0 }: DeviceHints): boolean {
+  if (/Android|iPhone|iPad|iPod|Mobile/i.test(userAgent)) return true;
+  return platform === 'MacIntel' && maxTouchPoints > 1;
+}
+
 /** Whether a mirror has a web player at all, on any device. */
 export function isEmbeddable(platform: VideoPlatform): boolean {
   return embeddablePlatforms.includes(platform);

@@ -62,14 +62,14 @@ const watchUrl = platformUrl(primary);
 }
 
 <script>
-  import { canEmbedInline, type VideoPlatform } from '../lib/video';
+  import { canEmbedInline, isMobileDevice, type VideoPlatform } from '../lib/video';
 
-  /**
-   * Match what the platforms themselves gate on: bilibili's player.html turns these
-   * user agents away, so this is the same signal, not a viewport guess. A narrow
-   * desktop window is still a desktop.
-   */
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  // Not a viewport guess: a narrow desktop window is still a desktop.
+  const isMobile = isMobileDevice({
+    userAgent: navigator.userAgent,
+    platform: navigator.platform,
+    maxTouchPoints: navigator.maxTouchPoints,
+  });
 
   document.querySelectorAll<HTMLElement>('.video-embed').forEach((container) => {
     const button = container.querySelector('button.play-button');
