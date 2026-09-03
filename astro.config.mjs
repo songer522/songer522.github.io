@@ -16,6 +16,9 @@ export default defineConfig({
 
   integrations: [
     sitemap({
+      // The vlogs pages link an unlisted YouTube playlist; keep them out of the
+      // sitemap to match the noindex tag they carry.
+      filter: (page) => !/\/(en\/)?vlogs\//.test(page),
       i18n: {
         defaultLocale: 'zh',
         locales: {

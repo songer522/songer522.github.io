@@ -18,7 +18,7 @@ const enPath = switchLocalePath(Astro.url.pathname, 'en');
 
 <nav class="site-nav">
   <div class="wrap">
-    <a class="logo" href={home}>Yang</a>
+    <a class="logo" href={home}>{tr('site.name')}</a>
     <div class="links">
       <a href={appsHref}>{tr('nav.apps')}</a>
       <a href={videosHref}>{tr('nav.videos')}</a>

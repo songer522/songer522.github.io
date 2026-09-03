@@ -1,7 +1,8 @@
 ---
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { switchLocalePath, type Locale } from '../i18n/utils';
+import Lightbox from '../components/Lightbox.astro';
+import { switchLocalePath, t, type Locale } from '../i18n/utils';
 import '../styles/global.css';
 
 interface Props {
@@ -9,9 +10,10 @@ interface Props {
   description: string;
   locale: Locale;
   ogImage?: string;
+  noindex?: boolean;
 }
 
-const { title, description, locale, ogImage } = Astro.props;
+const { title, description, locale, ogImage, noindex = false } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const zhPath = switchLocalePath(Astro.url.pathname, 'zh');
@@ -20,6 +22,7 @@ const zhUrl = new URL(zhPath, Astro.site);
 const enUrl = new URL(enPath, Astro.site);
 const ogImageUrl = new URL(ogImage ?? '/images/og-default.png', Astro.site);
 const ogLocale = locale === 'zh' ? 'zh_CN' : 'en_US';
+const siteName = t(locale)('site.name');
 ---
 
 <!doctype html>
@@ -33,6 +36,7 @@ const ogLocale = locale === 'zh' ? 'zh_CN' : 'en_US';
     <link rel="alternate" hreflang="zh-CN" href={zhUrl.href} />
     <link rel="alternate" hreflang="en" href={enUrl.href} />
     <link rel="alternate" hreflang="x-default" href={zhUrl.href} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -43,7 +47,7 @@ const ogLocale = locale === 'zh' ? 'zh_CN' : 'en_US';
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:image" content={ogImageUrl.href} />
     <meta property="og:locale" content={ogLocale} />
-    <meta property="og:site_name" content="Yang" />
+    <meta property="og:site_name" content={siteName} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -55,5 +59,6 @@ const ogLocale = locale === 'zh' ? 'zh_CN' : 'en_US';
       <slot />
     </main>
     <Footer locale={locale} />
+    <Lightbox locale={locale} />
   </body>
 </html>

@@ -4,6 +4,7 @@ import {
   otherPlatforms,
   platformUrl,
   platformLabel,
+  isEmbeddable,
   type PlatformLink,
 } from '../lib/video';
 import { t, type Locale } from '../i18n/utils';
@@ -22,7 +23,7 @@ const tr = t(locale);
 const primary = pickPrimaryPlatform(platforms, locale);
 const others = otherPlatforms(platforms, primary);
 
-const embeddable = primary.platform === 'youtube' || primary.platform === 'bilibili';
+const embeddable = isEmbeddable(primary.platform);
 
 const embedUrl =
   primary.platform === 'youtube'
@@ -31,12 +32,10 @@ const embedUrl =
       ? `https://player.bilibili.com/player.html?bvid=${primary.id}&autoplay=1`
       : primary.id;
 
-const uid = `video-${primary.platform}-${primary.id}`;
 ---
 
 <div
   class="video-embed"
-  id={uid}
   data-embed-url={embedUrl}
   data-embeddable={embeddable ? 'true' : 'false'}
   data-title={title}
