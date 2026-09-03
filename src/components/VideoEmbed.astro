@@ -32,12 +32,10 @@ const embedUrl =
       ? `https://player.bilibili.com/player.html?bvid=${primary.id}&autoplay=1`
       : primary.id;
 
-const uid = `video-${primary.platform}-${primary.id}`;
 ---
 
 <div
   class="video-embed"
-  id={uid}
   data-embed-url={embedUrl}
   data-embeddable={embeddable ? 'true' : 'false'}
   data-title={title}

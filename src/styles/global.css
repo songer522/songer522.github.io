@@ -412,8 +412,7 @@ img {
   border-radius: var(--radius);
 }
 
-.detail p > img + em,
-.detail p > em:only-child {
+.detail p:has(> img) + p > em:only-child {
   display: block;
   text-align: center;
   color: var(--muted);

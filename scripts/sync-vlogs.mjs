@@ -14,7 +14,7 @@
  * Writes files and stops. It never commits or pushes: this playlist is family
  * video, so a human should see `git diff` before anything reaches a public site.
  */
-import { readFile, writeFile, access } from 'node:fs/promises';
+import { readFile, writeFile, access, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 
@@ -33,10 +33,12 @@ const dryRun = process.argv.includes('--dry-run');
 async function loadEnvFile() {
   try {
     const text = await readFile(path.join(ROOT, '.env'), 'utf8');
-    for (const line of text.split('\n')) {
-      const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+    // Split on CRLF as well as LF. JavaScript's `.` does not match \r, so a CRLF file
+    // would otherwise fail this regex outright and the key would look simply absent.
+    for (const line of text.split(/\r?\n/)) {
+      const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)$/);
       if (match && !process.env[match[1]]) {
-        process.env[match[1]] = match[2].replace(/^["']|["']$/g, '');
+        process.env[match[1]] = match[2].trim().replace(/^["']|["']$/g, '').trim();
       }
     }
   } catch {
@@ -57,11 +59,19 @@ async function fetchPlaylist(playlistId, key) {
     if (pageToken) url.searchParams.set('pageToken', pageToken);
 
     const response = await fetch(url);
-    const body = await response.json();
+    // Parse defensively: an error response is not always JSON (proxies and rate
+    // limiters return HTML), and a SyntaxError here would hide the real status.
+    const raw = await response.text();
+    let body;
+    try {
+      body = JSON.parse(raw);
+    } catch {
+      body = null;
+    }
 
-    if (!response.ok) {
+    if (!response.ok || body === null) {
       const reason = body?.error?.errors?.[0]?.reason ?? '';
-      const message = body?.error?.message ?? response.statusText;
+      const message = body?.error?.message ?? (raw.slice(0, 200) || response.statusText);
       throw new Error(`YouTube API ${response.status} (${reason}): ${message}`);
     }
 
@@ -131,7 +141,7 @@ async function main() {
   console.log(`local file: ${existing.length} -> ${vlogs.length}`);
 
   for (const v of added) console.log(`  + ${v.id}  ${v.title}`);
-  for (const v of removed) console.log(`  - ${v.id}  ${v.title}  (thumbnail left in place)`);
+  for (const v of removed) console.log(`  - ${v.id}  ${v.title}`);
   for (const d of drifted) {
     console.log(`  ~ ${d.id}  title differs — keeping yours`);
     console.log(`      local:  ${d.local}`);
@@ -142,17 +152,43 @@ async function main() {
   for (const v of vlogs) if (!(await thumbnailExists(v.id))) missing.push(v);
 
   if (dryRun) {
-    console.log(`\ndry run: would write ${DATA_FILE} and fetch ${missing.length} thumbnail(s)`);
+    console.log(`\ndry run: would write ${DATA_FILE}, fetch ${missing.length} thumbnail(s)`);
+    if (removed.length) console.log(`         and delete ${removed.length} thumbnail(s)`);
     return;
   }
 
+  // A thumbnail that will not download must not end up as an entry, or the page ships
+  // a broken image. Collect the failures, drop those entries, and keep going: the next
+  // run retries them rather than the whole sync aborting on one bad fetch.
+  const failed = new Set();
   for (const v of missing) {
-    await fetchThumbnail(v.id);
-    console.log(`  thumbnail ${v.id}.jpg`);
+    try {
+      await fetchThumbnail(v.id);
+      console.log(`  thumbnail ${v.id}.jpg`);
+    } catch (error) {
+      failed.add(v.id);
+      console.log(`  !  ${v.id}  thumbnail failed, entry skipped — ${error.message}`);
+    }
   }
 
-  await writeFile(DATA_FILE, renderVlogs(vlogs, playlistUrl), 'utf8');
+  // Delete thumbnails for videos that left the playlist. Leaving them behind means a
+  // video pulled *because* it should not be public stays publicly served at a
+  // guessable URL, which defeats the point of removing it.
+  for (const v of removed) {
+    try {
+      await unlink(path.join(THUMB_DIR, `${v.id}.jpg`));
+      console.log(`  deleted thumbnail ${v.id}.jpg`);
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+  }
 
+  const kept = vlogs.filter((v) => !failed.has(v.id));
+  await writeFile(DATA_FILE, renderVlogs(kept, playlistUrl), 'utf8');
+
+  if (failed.size) {
+    console.log(`\n${failed.size} entr(y/ies) skipped for missing thumbnails — re-run to retry.`);
+  }
   const changed = added.length || removed.length || missing.length;
   console.log(changed ? '\nDone. Review `git diff`, then commit and push.' : '\nNo changes.');
 }

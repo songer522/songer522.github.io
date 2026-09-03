@@ -49,6 +49,21 @@ describe('mergeVlogs', () => {
     expect(result.removed).toEqual([]);
   });
 
+  it('keeps only the first of a duplicated playlist entry', () => {
+    // YouTube allows the same video to sit in a playlist twice.
+    const result = mergeVlogs([], [v('a', 'A'), v('b', 'B'), v('a', 'A again')]);
+
+    expect(result.vlogs).toEqual([v('a', 'A'), v('b', 'B')]);
+    expect(result.added).toEqual([v('a', 'A'), v('b', 'B')]);
+  });
+
+  it('does not re-add a duplicate that already exists locally', () => {
+    const result = mergeVlogs([v('a', 'mine')], [v('a', 'theirs'), v('a', 'theirs')]);
+
+    expect(result.vlogs).toEqual([v('a', 'mine')]);
+    expect(result.drifted).toHaveLength(1);
+  });
+
   it('reports no changes when nothing moved', () => {
     const existing = [v('a', 'A'), v('b', 'B')];
     const result = mergeVlogs(existing, existing);

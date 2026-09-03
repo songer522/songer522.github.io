@@ -22,8 +22,14 @@ export function mergeVlogs(existing, fetched) {
   const vlogs = [];
   const added = [];
   const drifted = [];
+  // A playlist can hold the same video twice; keep the first appearance only, or the
+  // site renders duplicate cards and downloads the thumbnail twice.
+  const seen = new Set();
 
   for (const remote of fetched) {
+    if (seen.has(remote.id)) continue;
+    seen.add(remote.id);
+
     const local = byId.get(remote.id);
     if (!local) {
       vlogs.push({ id: remote.id, title: remote.title });
