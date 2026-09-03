@@ -696,6 +696,48 @@ dialog.lightbox img {
   margin: 2rem 0 1.5rem;
 }
 
+/* Scroll-driven entrance motion, touch only: desktop has hover affordances
+   that a touch screen can never fire. The @supports gate keeps browsers
+   without view() timelines from ever seeing the opacity: 0 start state. */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Longhands, not the `animation` shorthand: the minifier folds a
+       shorthand plus a timeline into `animation: ... view()`, a form some
+       engines reject outright, which would silently drop the whole rule. */
+    .project-card,
+    .video-strip > div,
+    .vlog {
+      animation-name: rise-in;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        translate: 0 16px;
+      }
+
+      to {
+        opacity: 1;
+        translate: 0;
+      }
+    }
+  }
+}
+
+@media print {
+  .project-card,
+  .video-strip > div,
+  .vlog {
+    animation: none !important;
+    opacity: 1 !important;
+    translate: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
