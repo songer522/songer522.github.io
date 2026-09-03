@@ -2,7 +2,7 @@
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Lightbox from '../components/Lightbox.astro';
-import { switchLocalePath, type Locale } from '../i18n/utils';
+import { switchLocalePath, t, type Locale } from '../i18n/utils';
 import '../styles/global.css';
 
 interface Props {
@@ -22,6 +22,7 @@ const zhUrl = new URL(zhPath, Astro.site);
 const enUrl = new URL(enPath, Astro.site);
 const ogImageUrl = new URL(ogImage ?? '/images/og-default.png', Astro.site);
 const ogLocale = locale === 'zh' ? 'zh_CN' : 'en_US';
+const siteName = t(locale)('site.name');
 ---
 
 <!doctype html>
@@ -46,7 +47,7 @@ const ogLocale = locale === 'zh' ? 'zh_CN' : 'en_US';
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:image" content={ogImageUrl.href} />
     <meta property="og:locale" content={ogLocale} />
-    <meta property="og:site_name" content="Yang" />
+    <meta property="og:site_name" content={siteName} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

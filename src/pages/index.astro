@@ -20,7 +20,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
   .slice(0, 3);
 ---
 
-<BaseLayout title="Yang" description={tr('home.featured')} locale={locale}>
+<BaseLayout title={tr('site.name')} description={tr('home.featured')} locale={locale}>
   <div class="home-layout">
     <ProfileCard locale={locale} />
     <div>

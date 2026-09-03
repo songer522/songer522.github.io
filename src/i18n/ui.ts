@@ -4,6 +4,7 @@ export const defaultLocale: Locale = 'zh';
 
 export const ui = {
   zh: {
+    'site.name': '宋二',
     'nav.apps': '作品',
     'nav.videos': '视频',
     'nav.about': '关于',
@@ -31,6 +32,7 @@ export const ui = {
     'footer.note': '© 2026 宋二 · 用 Astro 搭建',
   },
   en: {
+    'site.name': 'Yang',
     'nav.apps': 'Work',
     'nav.videos': 'Videos',
     'nav.about': 'About',
