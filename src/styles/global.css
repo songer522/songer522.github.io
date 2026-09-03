@@ -1,6 +1,7 @@
 :root {
   --bg: #f8f5f0;
-  --surface: rgb(255 255 255 / 0.78);
+  --surface: #fff;
+  --surface-glass: rgb(248 245 240 / 0.86);
   --text: #20252c;
   --muted: #696b6b;
   --border: #e5ded5;
@@ -9,7 +10,7 @@
   --ink: #263849;
   --badge-live: #2f7d5b;
   --badge-wip: #b07c2a;
-  --badge-tool: #c2703d;
+  --badge-tool: var(--accent);
   --radius: 18px;
   --shadow: 0 1px 2px rgb(32 37 44 / 0.03), 0 12px 30px rgb(65 50 39 / 0.055);
   --maxw: 1120px;
@@ -70,8 +71,11 @@ img {
 
 /* Nav */
 .site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   border-bottom: 1px solid rgb(229 222 213 / 0.8);
-  background: rgb(248 245 240 / 0.78);
+  background: var(--surface-glass);
   backdrop-filter: blur(14px);
 }
 
@@ -521,7 +525,7 @@ dialog.lightbox {
   padding: 0;
   border: none;
   border-radius: var(--radius);
-  background: var(--surface);
+  background: #fff;
   overflow: hidden;
 }
 
@@ -545,7 +549,7 @@ dialog.lightbox img {
   font-size: 1.4rem;
   line-height: 1;
   color: var(--text);
-  background: var(--surface);
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: 50%;
   cursor: pointer;
@@ -691,7 +695,7 @@ dialog.lightbox img {
   .profile-card,
   .project-card,
   .video-strip > div,
-  .vlog,
+  .vlog:nth-child(-n + 8),
   .detail > * {
     animation: rise-in 500ms both cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -712,6 +716,22 @@ dialog.lightbox img {
   .video-strip > div:nth-child(4),
   .vlog:nth-child(4) {
     animation-delay: 210ms;
+  }
+
+  .vlog:nth-child(5) {
+    animation-delay: 280ms;
+  }
+
+  .vlog:nth-child(6) {
+    animation-delay: 350ms;
+  }
+
+  .vlog:nth-child(7) {
+    animation-delay: 420ms;
+  }
+
+  .vlog:nth-child(8) {
+    animation-delay: 490ms;
   }
 
   @keyframes rise-in {

@@ -3,6 +3,14 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Lightbox from '../components/Lightbox.astro';
 import { switchLocalePath, t, type Locale } from '../i18n/utils';
+import '@fontsource/dm-sans/latin-400.css';
+import '@fontsource/dm-sans/latin-500.css';
+import '@fontsource/dm-sans/latin-600.css';
+import '@fontsource/dm-sans/latin-700.css';
+import '@fontsource/noto-serif-sc/chinese-simplified-500.css';
+import '@fontsource/noto-serif-sc/chinese-simplified-600.css';
+import '@fontsource/noto-serif-sc/latin-500.css';
+import '@fontsource/noto-serif-sc/latin-600.css';
 import '../styles/global.css';
 
 interface Props {
@@ -40,13 +48,6 @@ const siteName = t(locale)('site.name');
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Noto+Serif+SC:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
-
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
