@@ -9,18 +9,30 @@ export interface PlatformLink {
 const embeddablePlatforms: VideoPlatform[] = ['youtube', 'bilibili'];
 
 /**
- * Pick which mirror to show in the facade. Prefer an embeddable platform, and among
- * those prefer the one that's actually reachable for the locale's audience: bilibili
- * for zh (no VPN needed), youtube for en. Falls back to xiaohongshu (link-out only)
- * when that's the only mirror available.
+ * Mirror preference per locale, most preferred first.
+ *
+ * zh puts reachability above playability: bilibili embeds and needs no VPN, and a
+ * RedNote card that links out still beats an inline YouTube player the reader may
+ * not be able to load at all. en has no such constraint, so it leads with YouTube
+ * and then prefers whatever embeds.
  */
+const preferenceByLocale: Record<Locale, VideoPlatform[]> = {
+  zh: ['bilibili', 'xiaohongshu', 'youtube'],
+  en: ['youtube', 'bilibili', 'xiaohongshu'],
+};
+
+/** Pick which mirror to show in the facade, ignoring the order they were listed in. */
 export function pickPrimaryPlatform(platforms: PlatformLink[], locale: Locale): PlatformLink {
-  const embeddable = platforms.filter((p) => embeddablePlatforms.includes(p.platform));
-  if (embeddable.length > 0) {
-    const preferred: VideoPlatform = locale === 'zh' ? 'bilibili' : 'youtube';
-    return embeddable.find((p) => p.platform === preferred) ?? embeddable[0];
+  for (const platform of preferenceByLocale[locale]) {
+    const match = platforms.find((p) => p.platform === platform);
+    if (match) return match;
   }
   return platforms[0];
+}
+
+/** Whether a mirror can play inline rather than only linking out. */
+export function isEmbeddable(platform: VideoPlatform): boolean {
+  return embeddablePlatforms.includes(platform);
 }
 
 export function otherPlatforms(platforms: PlatformLink[], primary: PlatformLink): PlatformLink[] {
