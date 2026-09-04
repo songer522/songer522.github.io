@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { stats } from '../../../lib/weibo';
+import { t } from '../../../i18n/utils';
+
+const locale = 'en';
+const tr = t(locale);
+
+const summary = stats();
+
+// The archive is 1,223 Chinese posts. Rendering them under English chrome would be a
+// page no English reader can use, so this side gets the shape of the thing and a way
+// through to it.
+const counters = [
+  { value: summary.posts.toLocaleString('en-US'), label: tr('weibo.stats.posts') },
+  { value: summary.characters.toLocaleString('en-US'), label: tr('weibo.stats.characters') },
+  { value: summary.images.toLocaleString('en-US'), label: tr('weibo.stats.images') },
+  { value: `${summary.firstYear}—${summary.lastYear}`, label: tr('weibo.stats.years') },
+];
+---
+
+<BaseLayout title={tr('weibo.title')} description={tr('weibo.note')} locale={locale}>
+  <h1 class="page-title">{tr('weibo.title')}</h1>
+  <p class="page-note">{tr('weibo.note')} {tr('weibo.enIntro')}</p>
+
+  <section class="weibo-archive">
+    <div class="weibo-stats">
+      {
+        counters.map((counter) => (
+          <div>
+            <strong>{counter.value}</strong>
+            <span>{counter.label}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <a class="view-all" href="/weibo/">{tr('weibo.title')} →</a>
+</BaseLayout>
