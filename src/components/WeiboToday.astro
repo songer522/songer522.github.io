@@ -1,0 +1,98 @@
+---
+import { stats } from '../lib/weibo';
+import { t, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+
+const summary = stats();
+
+// Without scripting the strip cannot know what day it is, so it stands as a plain
+// pointer into the archive. The script replaces this once it has today's posts.
+const fallbackNote = tr('weibo.allCount').replace('{n}', String(summary.posts));
+---
+
+<section class="weibo-today" data-archive="/weibo/">
+  <div data-slot>
+    <p class="weibo-today-note">{fallbackNote}</p>
+  </div>
+</section>
+
+<script>
+  /**
+   * Fetch just today's slice of the archive.
+   *
+   * `beijingMonthDay` is the tested one the ingest script uses: the day has to be
+   * Beijing's, or a post written on the evening of March 9th in Shanghai shows up
+   * under the wrong date for a reader in Chicago.
+   */
+  import { beijingMonthDay } from '../../scripts/lib/weibo-date.mjs';
+  import { pickRandom } from '../../scripts/lib/weibo-on-this-day.mjs';
+  import { cardAnchor } from '../../scripts/lib/weibo-anchor.mjs';
+
+  interface Entry {
+    id: string;
+    date: string;
+    text: string;
+    image: { src: string; w: number; h: number } | null;
+  }
+
+  const strip = document.querySelector<HTMLElement>('.weibo-today');
+  const slot = strip?.querySelector<HTMLElement>('[data-slot]');
+
+  if (strip && slot) {
+    const archive = strip.dataset.archive ?? '/weibo/';
+
+    const card = (entry: Entry) => {
+      const link = document.createElement('a');
+      link.className = 'weibo-today-card';
+      link.href = archive + cardAnchor(entry.id);
+
+      if (entry.image) {
+        const img = document.createElement('img');
+        img.src = entry.image.src;
+        img.width = entry.image.w;
+        img.height = entry.image.h;
+        img.alt = '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        link.append(img);
+      }
+
+      const body = document.createElement('div');
+      const when = document.createElement('span');
+      when.className = 'weibo-today-when';
+      when.textContent = entry.date.replaceAll('-', '.');
+      const text = document.createElement('p');
+      // textContent, not innerHTML — this is post text, and it goes in as text.
+      text.textContent = entry.text;
+      body.append(when, text);
+      link.append(body);
+
+      return link;
+    };
+
+    (async () => {
+      try {
+        const response = await fetch(`${archive}on-this-day/${beijingMonthDay()}.json`);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const entries: Entry[] = data.posts.length
+          ? data.posts
+          : [pickRandom(data.fallback)].filter(Boolean);
+
+        if (!entries.length) return;
+
+        slot.replaceChildren(...entries.map(card));
+        strip.dataset.empty = String(data.posts.length === 0);
+      } catch {
+        // Offline, or the file moved. The pointer into the archive still stands.
+      }
+    })();
+  }
+</script>

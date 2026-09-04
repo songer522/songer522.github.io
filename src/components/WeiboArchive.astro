@@ -1,0 +1,113 @@
+---
+import WeiboCard from './WeiboCard.astro';
+import WeiboHeatmap from './WeiboHeatmap.astro';
+import { posts, stats, yearsWithPosts, countsByYear } from '../lib/weibo';
+import { t, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+
+const summary = stats();
+const years = yearsWithPosts();
+const counts = countsByYear();
+
+const counters = [
+  { value: summary.posts.toLocaleString('en-US'), label: tr('weibo.stats.posts') },
+  { value: summary.characters.toLocaleString('en-US'), label: tr('weibo.stats.characters') },
+  { value: summary.images.toLocaleString('en-US'), label: tr('weibo.stats.images') },
+  { value: `${summary.firstYear}—${summary.lastYear}`, label: tr('weibo.stats.years') },
+];
+
+/**
+ * Switching a tab is one attribute change on the container — these rules do the rest.
+ * Generating a rule per year keeps 1,223 cards untouched on every click, where a
+ * JavaScript loop over them would be the slowest thing on the page.
+ *
+ * Only `.js` hides anything. With scripting off the page keeps its server-rendered
+ * state: every post, under its year heading.
+ */
+const viewRules = years
+  .map(
+    (year) => `
+.js .weibo-archive[data-view="${year}"] .weibo-card[data-year="${year}"] { display: block; }
+.js .weibo-archive[data-view="${year}"] .weibo-heatmap[data-year="${year}"] { display: grid; }`,
+  )
+  .join('');
+---
+
+<section
+  class="weibo-archive"
+  data-view="all"
+  data-total={summary.posts}
+  data-year-counts={JSON.stringify(Object.fromEntries(counts))}
+  data-label-today={tr('weibo.todayCount')}
+  data-label-today-empty={tr('weibo.todayEmpty')}
+  data-label-year={tr('weibo.yearCount')}
+  data-label-all={tr('weibo.allCount')}
+>
+  <div class="weibo-stats">
+    {
+      counters.map((counter) => (
+        <div>
+          <strong>{counter.value}</strong>
+          <span>{counter.label}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <h2 class="weibo-heading">{tr('weibo.timeline')}</h2>
+
+  <div class="weibo-tabs" role="tablist">
+    <button type="button" role="tab" data-view="today" aria-selected="false">
+      {tr('weibo.today')}
+    </button>
+    {
+      years.map((year) => (
+        <button type="button" role="tab" data-view={String(year)} aria-selected="false">
+          {year} <span class="n">{counts.get(year)}</span>
+        </button>
+      ))
+    }
+    <button type="button" role="tab" data-view="all" aria-selected="true">
+      {tr('weibo.all')} <span class="n">{summary.posts}</span>
+    </button>
+  </div>
+
+  <div class="weibo-heatmaps">
+    {years.map((year) => <WeiboHeatmap posts={posts} year={year} />)}
+  </div>
+
+  <p class="weibo-count" data-count>
+    {tr('weibo.allCount').replace('{n}', String(summary.posts))}
+  </p>
+
+  <div class="weibo-list">
+    {
+      years.map((year) => (
+        <>
+          <h3 class="weibo-year" data-year={year}>
+            {year}
+          </h3>
+          {posts
+            .filter((post) => post.date.startsWith(String(year)))
+            .map((post) => (
+              <WeiboCard post={post} locale={locale} />
+            ))}
+        </>
+      ))
+    }
+  </div>
+</section>
+
+<style set:html={viewRules}></style>
+
+<script>
+  import { initArchive } from '../../scripts/lib/weibo-archive-ui.mjs';
+
+  initArchive();
+</script>

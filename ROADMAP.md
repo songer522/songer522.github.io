@@ -224,6 +224,10 @@ static default working — it is an optimization of a solved problem, not a subs
 ## Explicitly NOT next
 
 - **Any change to the blog repo.** It is separate and self-contained.
+- **Translating the Weibo archive.** 1,223 Chinese posts stay Chinese; `/en/weibo/` is a
+  pointer, not a translation.
+- **A second Weibo import.** The account stopped in 2025 (7 posts that year). The archive
+  is closed, which is why 16 MB of images committed once is an acceptable trade.
 - **A CMS.** Markdown files in git are the right weight for this; adding a CMS would be
   solving a problem the site does not have.
 - **A custom domain.** Deliberately deferred. If it happens later, it is a `CNAME` file

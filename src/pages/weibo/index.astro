@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WeiboArchive from '../../components/WeiboArchive.astro';
+import { t } from '../../i18n/utils';
+
+const locale = 'zh';
+const tr = t(locale);
+---
+
+<BaseLayout title={tr('weibo.title')} description={tr('weibo.note')} locale={locale}>
+  <h1 class="page-title">{tr('weibo.title')}</h1>
+  <p class="page-note">{tr('weibo.note')}</p>
+  <WeiboArchive locale={locale} />
+</BaseLayout>

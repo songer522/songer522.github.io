@@ -1,0 +1,80 @@
+---
+import { permalink, formatWeiboDate, type WeiboPost } from '../lib/weibo';
+import { cardElementId } from '../../scripts/lib/weibo-anchor.mjs';
+import { t, type Locale } from '../i18n/utils';
+
+interface Props {
+  post: WeiboPost;
+  locale: Locale;
+}
+
+const { post, locale } = Astro.props;
+const tr = t(locale);
+
+const year = post.date.slice(0, 4);
+// `data-md` is what the "on this day" filter matches on. Keeping it on the element
+// means the browser never needs a copy of the post data to do the filtering.
+const monthDay = post.date.slice(5);
+
+const engagement = [
+  { count: post.reposts, label: '↻' },
+  { count: post.comments, label: '☰' },
+  { count: post.likes, label: '♡' },
+].filter((item) => item.count > 0);
+---
+
+<article class="weibo-card" id={cardElementId(post.id)} data-year={year} data-md={monthDay}>
+  <p class="weibo-when">
+    <time datetime={`${post.date}T${post.time}:00+08:00`}>
+      {formatWeiboDate(post.date)} {post.time}
+    </time>
+  </p>
+
+  {post.text && <p class="weibo-text">{post.text}</p>}
+
+  {
+    post.video && (
+      <figure class="weibo-video">
+        <img
+          src={post.video.cover}
+          width={post.video.w}
+          height={post.video.h}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        {post.video.title && <figcaption>{post.video.title}</figcaption>}
+      </figure>
+    )
+  }
+
+  {
+    post.images.length > 0 && (
+      <div class="weibo-images" data-count={Math.min(post.images.length, 4)}>
+        {post.images.map((image) => (
+          <img
+            src={image.src}
+            width={image.w}
+            height={image.h}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        ))}
+      </div>
+    )
+  }
+
+  <p class="weibo-meta">
+    {
+      engagement.map((item) => (
+        <span>
+          {item.label} {item.count}
+        </span>
+      ))
+    }
+    <a href={permalink(post)} target="_blank" rel="noopener noreferrer">
+      {tr('weibo.viewOriginal')} →
+    </a>
+  </p>
+</article>

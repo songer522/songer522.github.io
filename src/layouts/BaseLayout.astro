@@ -34,6 +34,10 @@ const siteName = t(locale)('site.name');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Set before the stylesheet is applied, so anything that only makes sense with
+        scripting — the Weibo archive filtering to one tab out of 1,223 posts — can
+        hide itself without the page first painting the unfiltered state. */}
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl.href} />

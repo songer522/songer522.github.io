@@ -15,6 +15,7 @@ lives under `/en/`.
 | `npm run test`   | Run the vitest suite (locale parity + routing) |
 | `npx astro check`| Type-check `.astro` and `.ts` files            |
 | `npm run sync:vlogs` | Refresh the vlog list from YouTube — see [Vlogs](#vlogs) |
+| `npm run sync:weibo` | Rebuild the Weibo archive from a local export — see [Weibo archive](#weibo-archive) |
 
 ## Adding a project
 
@@ -145,6 +146,85 @@ The merge rules (`scripts/lib/merge-vlogs.mjs`), the file parser
 (`scripts/lib/vlogs-file.mjs`) and the date parsing and ordering
 (`scripts/lib/vlog-date.mjs`) are pure and unit-tested; the network and image work stays
 in `scripts/sync-vlogs.mjs`.
+
+## Weibo archive
+
+`/weibo/` is 1,223 posts written on Weibo between 2009 and 2025, filtered by year the
+way the [blog archive](https://github.com/songer522/blog) is. Like the vlogs it is not a
+content collection — it is generated data in `src/data/weibo.json`, with types and
+derived counters in `src/lib/weibo.ts`. Nobody hand-edits the JSON; rerun the sync.
+
+The English side gets `/en/weibo/`: the counters and a link through. The posts are
+Chinese and stay Chinese, so rendering 1,223 of them under English chrome would be a
+page no English reader can use.
+
+**Dates are Beijing wall-clock strings, never `Date` objects.** A post written at 23:59
+in Shanghai has to stay on that day for a reader in Chicago, and "on this day" has to
+mean the same date everywhere. `scripts/lib/weibo-date.mjs` is where that is enforced.
+
+### Rebuilding it
+
+The export is not in the repo — it is 66 MB, most of it originals. Point the script at
+wherever it lives:
+
+```sh
+npm run sync:weibo -- --dry-run              # report only, write nothing
+npm run sync:weibo                           # write src/data/weibo.json + images
+npm run sync:weibo -- --source ~/path/to/export --quality 60 --width 800
+npm run sync:weibo -- --force                # re-encode images that already exist
+```
+
+It expects `weibo-posts.json` and `weibo-images/` in the source directory, and defaults
+to `~/Workspace/Weibo` (override with `--source` or `WEIBO_EXPORT_DIR`). Already-built
+images are reused unless `--force`, so a rerun is fast.
+
+Then review `git diff`, commit and push. **The script never commits or pushes.**
+
+Three things about the export that cost time to work out, so they are worth stating:
+
+- **No image reference matches its file by name.** Two eras of Weibo naming were
+  downloaded with two different manglings — `&690` became `_690.jpg`, and newer
+  references had their extension doubled (`…qae.jpg.jpg`). `scripts/lib/weibo-images.mjs`
+  resolves both; `tests/weibo-images.test.ts` holds it to the real export when that
+  export is on the machine, and skips otherwise.
+- **17 of the 28 video covers no longer exist anywhere.** They were hosted on Miaopai,
+  whose CDN no longer resolves. The 11 that survive are downloaded rather than hotlinked,
+  for exactly the reason the other 17 are gone. Those posts render as text.
+- **Photos are recompressed to WebP at 800px**, about 16 MB for 487 images against 46 MB
+  of originals. Width is barely a lever — the originals cap at 1000px — so size is a
+  quality decision, and the twenty largest files are only 13% of the total. The script
+  prints what it wrote and warns past 18 MB; check that number before committing,
+  because this repo keeps it in history for good.
+
+### On this day
+
+The archive opens on posts made on today's date in past years, falling back to one at
+random when the date is empty (28 of them are). The homepage carries the same thing as a
+short strip.
+
+Neither can be server-rendered: a static build freezes the date at deploy time, and the
+site only rebuilds on push. So the archive page ships every post and filters in the
+browser, and the homepage fetches a single small file from
+`/weibo/on-this-day/<MM-DD>.json` — 366 of them are generated, about 2 KB each.
+
+With scripting off, `/weibo/` still renders every post under its year heading: the
+filtering rules are all scoped to a `.js` class set in `BaseLayout.astro`. The heatmap is
+the one thing that needs scripting, since without it there is no year to select.
+
+A link that names a post — `/weibo/#w-<id>` — opens that post's year rather than the
+default view, which would otherwise hide the very card the link pointed at. The anchor
+format is defined once in `scripts/lib/weibo-anchor.mjs`, because the card, the homepage
+strip and the archive all have to agree on it.
+
+### Tests
+
+Most of this suite tests pure functions in `scripts/lib`. The browser behaviour is not
+pure, and that is where the one real bug got through, so `tests/weibo-archive-ui.test.ts`
+drives `scripts/lib/weibo-archive-ui.mjs` against a real DOM (happy-dom, selected per
+file with a `@vitest-environment` docblock rather than for the whole suite). The archive
+component does nothing but call that module, so the code the page runs is the code the
+test runs. The last block in that file guards the attribute names the fixture depends on
+against drifting away from the components.
 
 ## `cover` → `image()` migration
 

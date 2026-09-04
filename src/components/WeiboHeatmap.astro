@@ -1,0 +1,23 @@
+---
+import { buildHeatmap } from '../../scripts/lib/weibo-heatmap.mjs';
+import { formatWeiboDate, type WeiboPost } from '../lib/weibo';
+
+interface Props {
+  posts: WeiboPost[];
+  year: number;
+}
+
+const { posts, year } = Astro.props;
+const grid = buildHeatmap(posts, year);
+---
+
+{/* Seven rows, filled column by column, so each row is a fixed weekday. The blanks
+    before January 1st are what keep that alignment. */}
+<div class="weibo-heatmap" data-year={year} aria-hidden="true">
+  {Array.from({ length: grid.leadingBlanks }).map(() => <i class="pad"></i>)}
+  {
+    grid.days.map((day: { date: string; count: number; level: number }) => (
+      <i data-level={day.level} title={`${formatWeiboDate(day.date)} · ${day.count}`} />
+    ))
+  }
+</div>

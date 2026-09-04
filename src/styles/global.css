@@ -813,3 +813,339 @@ dialog.lightbox img {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Weibo archive
+   1,223 posts on one page. Everything below is written so that switching a tab
+   is a single attribute change on `.weibo-archive` — the per-year rules that do
+   the actual showing are generated in WeiboArchive.astro, since they depend on
+   which years have posts.
+   --------------------------------------------------------------------------- */
+
+.weibo-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.weibo-stats strong {
+  color: var(--ink);
+  display: block;
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.weibo-stats span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.weibo-heading {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+}
+
+.weibo-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.weibo-tabs button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.weibo-tabs button:hover {
+  border-color: var(--accent);
+}
+
+.weibo-tabs button[aria-selected='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.weibo-tabs .n {
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-left: 0.15rem;
+}
+
+.weibo-tabs button[aria-selected='true'] .n {
+  color: var(--accent-ink);
+}
+
+/* Seven rows, filled column by column: `grid-auto-flow: column` lays the year out a
+   week at a time on its own, so long as the leading blanks are there.
+
+   Hidden until a year is selected, and so hidden altogether without scripting — there
+   is no year to select then, and sixteen stacked grids would say nothing. The grid is
+   decoration; the posts underneath are the page. */
+.weibo-heatmap {
+  display: none;
+  grid-auto-flow: column;
+  grid-auto-columns: 10px;
+  grid-template-rows: repeat(7, 10px);
+  gap: 3px;
+  margin-bottom: 1.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.weibo-heatmap i {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.weibo-heatmap i.pad {
+  background: none;
+}
+
+.weibo-heatmap i[data-level='1'] { background: color-mix(in srgb, var(--accent) 28%, var(--border)); }
+.weibo-heatmap i[data-level='2'] { background: color-mix(in srgb, var(--accent) 52%, var(--border)); }
+.weibo-heatmap i[data-level='3'] { background: color-mix(in srgb, var(--accent) 76%, var(--border)); }
+.weibo-heatmap i[data-level='4'] { background: var(--accent); }
+
+.weibo-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  margin: 0 0 1.25rem;
+}
+
+.weibo-year {
+  color: var(--ink);
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 2.5rem 0 1rem;
+}
+
+.weibo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.9rem;
+  padding: 1.1rem 1.3rem;
+}
+
+.weibo-when {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 0.5rem;
+}
+
+/* The line breaks are Yang's, and in the longer posts they carry the pacing. */
+.weibo-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.weibo-images {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+}
+
+/* A lone photo runs the width of the card; several share a square grid, the way the
+   app laid them out. `height: auto` keeps the intrinsic width/height on the tags,
+   which is what reserves the space while they lazy-load. */
+.weibo-images img {
+  border-radius: 10px;
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.weibo-images[data-count='1'] img {
+  max-height: 30rem;
+  object-fit: contain;
+  object-position: left;
+  width: auto;
+}
+
+/* Two side by side, three or more in a three-column grid — the way the app laid
+   them out. `auto-fit` would put all four in one row instead. */
+.weibo-images[data-count='2'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.weibo-images[data-count='3'],
+.weibo-images[data-count='4'] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.weibo-images:not([data-count='1']) {
+  max-width: 30rem;
+}
+
+.weibo-images:not([data-count='1']) img {
+  aspect-ratio: 1;
+  object-fit: cover;
+  width: 100%;
+}
+
+.weibo-video {
+  margin: 0.9rem 0 0;
+}
+
+.weibo-video img {
+  border-radius: 10px;
+  display: block;
+  height: auto;
+  max-height: 24rem;
+  max-width: 100%;
+  width: auto;
+}
+
+.weibo-video figcaption {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
+.weibo-meta {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  font-size: 0.78rem;
+  gap: 0.9rem;
+  margin: 0.9rem 0 0;
+}
+
+.weibo-meta a {
+  color: var(--accent-ink);
+  margin-left: auto;
+  text-decoration: none;
+}
+
+.weibo-meta a:hover {
+  text-decoration: underline;
+}
+
+/* Filtering. Nothing here applies without scripting, so the no-JS page keeps its
+   server-rendered state: every post, under its year heading. */
+.js .weibo-archive .weibo-card,
+.js .weibo-archive .weibo-year {
+  display: none;
+}
+
+.js .weibo-archive[data-view='all'] .weibo-card,
+.js .weibo-archive[data-view='all'] .weibo-year {
+  display: block;
+}
+
+.js .weibo-archive[data-view='today'] .weibo-card.is-today {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .weibo-stats {
+    gap: 1.5rem 2rem;
+  }
+
+  .weibo-heatmap {
+    grid-auto-columns: 8px;
+    grid-template-rows: repeat(7, 8px);
+    gap: 2px;
+  }
+}
+
+/* The homepage's "on this day" strip. Filled in by fetch, so it starts as a plain
+   pointer into the archive and must not jump when the cards arrive. */
+.weibo-today [data-slot] {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.weibo-today-note {
+  color: var(--muted);
+  margin: 0;
+}
+
+.weibo-today-card {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: inherit;
+  display: flex;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.weibo-today-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.weibo-today-card img {
+  border-radius: 8px;
+  flex: none;
+  height: 3.5rem;
+  object-fit: cover;
+  width: 3.5rem;
+}
+
+.weibo-today-when {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.weibo-today-card p {
+  margin: 0.15rem 0 0;
+}
+
+/* A section that points somewhere else rather than showing its own content — the blog
+   lives in its own repo, so the homepage links out instead of embedding anything. */
+.section-note {
+  color: var(--muted);
+  margin: -0.75rem 0 1.25rem;
+  max-width: 60ch;
+}
+
+.cta {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent-ink);
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.45rem 1.1rem;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.cta:hover {
+  background: var(--accent);
+  color: var(--surface);
+  transform: translateY(-1px);
+}
