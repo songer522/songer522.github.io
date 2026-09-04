@@ -11,7 +11,20 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          # Same floor as the build job below: package.json engines.
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx astro check
   build:
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
