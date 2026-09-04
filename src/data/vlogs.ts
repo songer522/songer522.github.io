@@ -19,7 +19,14 @@ export const playlistUrl =
   'https://www.youtube.com/playlist?list=PLYThmuvRX57DaI0cAAHAji7hJIPOcPOe3';
 
 export const vlogs: Vlog[] = [
+  { id: '4nFLi-TKHWk', title: 'My Birthday 2025', date: '2025-11-06' },
+  { id: 'aNKJwuvMSlk', title: 'Halloween 2025', date: '2025-11-01' },
+  { id: 'XUwW0JQetqA', title: 'Trip to Holy hill', date: '2025-10-27' },
+  { id: 'UmlwQ_EFGrk', title: 'Office Vlog Osmo Nano', date: '2025-10-24' },
+  { id: 'WlhXWNR0oeg', title: 'Chinatown lunch after work', date: '2025-10-22' },
   { id: '0T8TbgsQ39o', title: 'Naper Settlement Field Trip', date: '2025-10-18' },
+  { id: 'IiCiWvsUP5A', title: 'Grandma\'s Birthday', date: '2025-10-11' },
+  { id: 'RXrdwYcu1ow', title: 'Northern Michigan Trip 2025', date: '2025-09-01' },
   { id: 'Ng8pVpZI0dg', title: 'Matthiessen State Park', date: '2025-08-25' },
   { id: '6sAuqLp9TPk', title: 'Blackberry Farm', date: '2025-08-23' },
   { id: 'rv7JoL6GQj4', title: 'Seven Bridges and Kenosha', date: '2025-08-17' },
