@@ -211,6 +211,21 @@ With scripting off, `/weibo/` still renders every post under its year heading: t
 filtering rules are all scoped to a `.js` class set in `BaseLayout.astro`. The heatmap is
 the one thing that needs scripting, since without it there is no year to select.
 
+A link that names a post — `/weibo/#w-<id>` — opens that post's year rather than the
+default view, which would otherwise hide the very card the link pointed at. The anchor
+format is defined once in `scripts/lib/weibo-anchor.mjs`, because the card, the homepage
+strip and the archive all have to agree on it.
+
+### Tests
+
+Most of this suite tests pure functions in `scripts/lib`. The browser behaviour is not
+pure, and that is where the one real bug got through, so `tests/weibo-archive-ui.test.ts`
+drives `scripts/lib/weibo-archive-ui.mjs` against a real DOM (happy-dom, selected per
+file with a `@vitest-environment` docblock rather than for the whole suite). The archive
+component does nothing but call that module, so the code the page runs is the code the
+test runs. The last block in that file guards the attribute names the fixture depends on
+against drifting away from the components.
+
 ## `cover` → `image()` migration
 
 `cover` is a plain string path so placeholder SVGs are frictionless. Once real raster
