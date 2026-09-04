@@ -32,6 +32,7 @@ const fallbackNote = tr('weibo.allCount').replace('{n}', String(summary.posts));
    */
   import { beijingMonthDay } from '../../scripts/lib/weibo-date.mjs';
   import { pickRandom } from '../../scripts/lib/weibo-on-this-day.mjs';
+  import { cardAnchor } from '../../scripts/lib/weibo-anchor.mjs';
 
   interface Entry {
     id: string;
@@ -49,7 +50,7 @@ const fallbackNote = tr('weibo.allCount').replace('{n}', String(summary.posts));
     const card = (entry: Entry) => {
       const link = document.createElement('a');
       link.className = 'weibo-today-card';
-      link.href = `${archive}#w-${entry.id}`;
+      link.href = archive + cardAnchor(entry.id);
 
       if (entry.image) {
         const img = document.createElement('img');

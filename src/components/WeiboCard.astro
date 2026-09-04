@@ -1,5 +1,6 @@
 ---
 import { permalink, formatWeiboDate, type WeiboPost } from '../lib/weibo';
+import { cardElementId } from '../../scripts/lib/weibo-anchor.mjs';
 import { t, type Locale } from '../i18n/utils';
 
 interface Props {
@@ -22,7 +23,7 @@ const engagement = [
 ].filter((item) => item.count > 0);
 ---
 
-<article class="weibo-card" id={`w-${post.id}`} data-year={year} data-md={monthDay}>
+<article class="weibo-card" id={cardElementId(post.id)} data-year={year} data-md={monthDay}>
   <p class="weibo-when">
     <time datetime={`${post.date}T${post.time}:00+08:00`}>
       {formatWeiboDate(post.date)} {post.time}

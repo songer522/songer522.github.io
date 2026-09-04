@@ -120,6 +120,7 @@ const viewRules = years
    */
   import { beijingMonthDay } from '../../scripts/lib/weibo-date.mjs';
   import { pickRandom } from '../../scripts/lib/weibo-on-this-day.mjs';
+  import { cardElementId, cardIdFromHash } from '../../scripts/lib/weibo-anchor.mjs';
 
   const archive = document.querySelector<HTMLElement>('.weibo-archive');
 
@@ -167,6 +168,37 @@ const viewRules = years
       tab.addEventListener('click', () => show(tab.dataset.view ?? 'all'));
     }
 
-    show('today');
+    /**
+     * A link that names a post wins over the default view.
+     *
+     * Without this, `/weibo/#w-<id>` opens on 那年今日 and the filter hides the very
+     * card the link pointed at — the reader lands on someone else's post, or on
+     * nothing. The homepage strip hits this every time it falls back to a random post,
+     * since it and the archive draw independently, and so does any shared or
+     * bookmarked link to a single post.
+     */
+    const targeted = () => {
+      const id = cardIdFromHash(location.hash);
+      if (!id) return null;
+
+      // The id comes off the URL, so escape it before it becomes a selector.
+      return archive.querySelector<HTMLElement>(`#${CSS.escape(cardElementId(id))}`);
+    };
+
+    const reveal = (card: HTMLElement) => {
+      show(card.dataset.year ?? 'all');
+      // The browser already tried to jump here, while the card was still hidden.
+      card.scrollIntoView();
+    };
+
+    const target = targeted();
+    if (target) reveal(target);
+    else show('today');
+
+    // A fragment can also arrive after load, from a link elsewhere on the page.
+    window.addEventListener('hashchange', () => {
+      const card = targeted();
+      if (card) reveal(card);
+    });
   }
 </script>
