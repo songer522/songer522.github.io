@@ -53,18 +53,26 @@ const hasExport =
   existsSync(path.join(EXPORT_DIR, 'weibo-posts.json')) &&
   existsSync(path.join(EXPORT_DIR, 'weibo-images'));
 
-describe.skipIf(!hasExport)('against the real export', () => {
+// Vitest runs a describe's callback even when skipIf skips it, so reading the export at
+// the top of the block would throw ENOENT on any machine that lacks it (CI, fresh clone)
+// instead of skipping. Load lazily inside the tests instead; skipped tests never read.
+function loadExport() {
   const posts = JSON.parse(readFileSync(path.join(EXPORT_DIR, 'weibo-posts.json'), 'utf8')).posts;
   const files = new Set(readdirSync(path.join(EXPORT_DIR, 'weibo-images')));
   const refs: string[] = posts.flatMap((post: { p?: string[] }) => post.p ?? []);
+  return { files, refs };
+}
 
+describe.skipIf(!hasExport)('against the real export', () => {
   it('resolves every image reference to a file on disk', () => {
+    const { files, refs } = loadExport();
     const unresolved = refs.filter((ref) => !imageCandidates(ref).some((name) => files.has(name)));
 
     expect(unresolved).toEqual([]);
   });
 
   it('gives every reference its own output name', () => {
+    const { refs } = loadExport();
     expect(new Set(refs.map(imageSlug)).size).toBe(new Set(refs).size);
   });
 });
