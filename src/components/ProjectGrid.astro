@@ -1,12 +1,15 @@
 ---
 interface Props {
   title?: string;
+  /** A line under the title. The grid owns the heading, so it owns this too. */
+  note?: string;
 }
 
-const { title } = Astro.props;
+const { title, note } = Astro.props;
 ---
 
 {title && <h2 class="section-title">{title}</h2>}
+{note && <p class="section-note">{note}</p>}
 <div class="project-grid">
   <slot />
 </div>

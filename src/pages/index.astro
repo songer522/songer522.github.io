@@ -13,6 +13,23 @@ import { t, localeOf, slugOf } from '../i18n/utils';
 const locale = 'zh';
 const tr = t(locale);
 
+/**
+ * A line under each section heading. Written in Chinese and kept here rather than in
+ * i18n/ui.ts because they only run on this page — the English homepage deliberately
+ * has none, and inventing English versions nobody reads would be worse than not
+ * having them. Same arrangement as about.astro, which carries its prose per locale.
+ */
+const notes = {
+  apps: '用户增长曲线非常平稳。',
+  videos: '把各种类型都涉猎了，还是没啥用。',
+  weibo: '那时候我以为我很有意思。',
+  blog: '那时候我以为我很有深度。',
+  vlogs: '这个的主要受众可能只有 50 年后的大模型和大孙子。',
+};
+
+/** Labels the strip below it, now that the section heading carries the year range. */
+const weiboTodayLabel = '那年今日';
+
 // The same upload can sit in both the vlog playlist and the videos collection.
 const vlogs = excludeCurated(allVlogs, youTubeIdsFrom(await getCollection('videos')));
 
@@ -29,7 +46,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
   <div class="home-layout">
     <ProfileCard locale={locale} />
     <div>
-      <ProjectGrid title={tr('home.featured')}>
+      <ProjectGrid title={tr('home.featured')} note={notes.apps}>
         {
           apps.map((app) => (
             <ProjectCard
@@ -46,6 +63,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
       <a class="view-all" href="/apps/">{tr('card.viewAll')} →</a>
 
       <h2 class="section-title" style="margin-top: 3rem;">{tr('home.videos')}</h2>
+      <p class="section-note">{notes.videos}</p>
       <div class="video-strip">
         {
           videos.map((video) => (
@@ -65,14 +83,17 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
       <a class="view-all" href="/videos/">{tr('card.viewAll')} →</a>
 
       <h2 class="section-title" style="margin-top: 3rem;">{tr('home.weibo')}</h2>
+      <p class="section-note">{notes.weibo}</p>
+      <h3 class="weibo-heading">{weiboTodayLabel}</h3>
       <WeiboToday locale={locale} />
       <a class="view-all" href="/weibo/">{tr('card.viewAll')} →</a>
 
       <h2 class="section-title" style="margin-top: 3rem;">{tr('home.blog')}</h2>
-      <p class="section-note">{tr('home.blogNote')}</p>
+      <p class="section-note">{notes.blog}</p>
       <a class="cta" href="https://songer522.github.io/blog/">{tr('home.blogCta')} →</a>
 
       <h2 class="section-title" style="margin-top: 3rem;">{tr('home.vlogs')}</h2>
+      <p class="section-note">{notes.vlogs}</p>
       <div class="video-strip">
         {
           vlogs.slice(0, 3).map((vlog) => (
