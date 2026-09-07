@@ -6,12 +6,19 @@ interface Props {
   status?: 'live' | 'wip' | 'free-tool';
   statusLabel?: string;
   cover?: string;
+  /**
+   * An optional second destination — something you can do with the app right here,
+   * rather than reading about it. The card itself still links to the detail page:
+   * the title carries that link and stretches over the whole card, so this one sits
+   * above it instead of nesting inside it, which HTML does not allow.
+   */
+  action?: { label: string; url: string };
 }
 
-const { href, title, summary, status, statusLabel, cover } = Astro.props;
+const { href, title, summary, status, statusLabel, cover, action } = Astro.props;
 ---
 
-<a class="project-card" href={href}>
+<article class="project-card">
   {status && statusLabel && <span class={`badge ${status}`}>{statusLabel}</span>}
   {
     cover && (
@@ -21,8 +28,17 @@ const { href, title, summary, status, statusLabel, cover } = Astro.props;
     )
   }
   <div class="body">
-    <p class="title">{title}</p>
+    <p class="title"><a href={href}>{title}</a></p>
     <p class="summary">{summary}</p>
-    <span class="cta" aria-hidden="true">→</span>
+    <div class="actions">
+      {
+        action && (
+          <a class="play" href={action.url} target="_blank" rel="noopener noreferrer">
+            {action.label}
+          </a>
+        )
+      }
+      <span class="cta" aria-hidden="true">→</span>
+    </div>
   </div>
-</a>
+</article>

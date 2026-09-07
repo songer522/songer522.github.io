@@ -10,6 +10,8 @@ const apps = defineCollection({
     status: z.enum(['live', 'wip', 'free-tool']),
     tags: z.array(z.string()).default([]),
     cover: z.string(), // e.g. /images/placeholders/app-1.svg
+    // Something playable or usable in the browser, promoted to a button on the card.
+    playUrl: z.string().optional(),
     ogImage: z.string().optional(),
     links: z
       .array(
