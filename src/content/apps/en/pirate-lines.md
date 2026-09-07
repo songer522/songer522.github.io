@@ -38,8 +38,7 @@ just went ahead and built it, presumably because nobody told him it was a lot.
 
 Every pixel you see — the pirates, the ships, the treasure chests, the storm clouds, that
 logo — is the work of **Tianyu**, and he designed a good number of the levels too. The game
-looks the way it does entirely because of him. I wrote the code; he made it something you'd
-want to look at.
+looks the way it does entirely because of him.
 
 Thank you, 天宇哥. Fourteen years later it still holds up.
 
