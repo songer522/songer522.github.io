@@ -7,7 +7,7 @@ cover: /images/apps/track-lapse.png
 links:
   - { label: "GitHub", url: "https://github.com/songer522/Clay" }
 featured: true
-order: 3
+order: 4
 ---
 
 A side-scrolling runner: race through themed levels, dodging and kicking obstacles, chasing
