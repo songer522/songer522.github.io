@@ -7,7 +7,7 @@ cover: /images/apps/track-lapse.png
 links:
   - { label: "GitHub", url: "https://github.com/songer522/Clay" }
 featured: true
-order: 3
+order: 4
 ---
 
 一款横版跑酷平台游戏：穿过一关关不同主题的关卡，躲避和踢开路上的障碍，追着时间跑金银铜牌。
