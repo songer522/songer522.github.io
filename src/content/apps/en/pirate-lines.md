@@ -19,6 +19,8 @@ beat the CPU.
 
 There are 96 levels, and none of them is a plain square grid. The routes wander around
 treasure chests, ships and storms, so half the puzzle is just the shape of the board.
+Levels 80, 88 and 92 are up at the top of this page: blue lines are mine, gold ones the
+CPU's, and a gold coin means that box is already taken.
 
 ## My first solo game, and I have no idea how
 
@@ -40,7 +42,7 @@ Every pixel you see — the pirates, the ships, the treasure chests, the storm c
 logo — is the work of **Tianyu**, and he designed a good number of the levels too. The game
 looks the way it does entirely because of him.
 
-Thank you, 天宇哥. Fourteen years later it still holds up.
+Thank you, 天予哥. Fourteen years later it still holds up.
 
 ## Go play it
 
