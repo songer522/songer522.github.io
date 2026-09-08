@@ -48,6 +48,10 @@ const siteName = t(locale)('site.name');
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    {/* Keep in step with --accent in src/styles/global.css and theme_color in
+        public/site.webmanifest — the three drift easily, and a mismatched color
+        shows in the browser chrome on mobile. */}
+    <meta name="theme-color" content="#B95F36" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

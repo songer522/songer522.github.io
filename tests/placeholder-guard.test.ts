@@ -3,11 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { scanForPlaceholders } from './helpers/placeholder-scan.js';
 
 /**
- * ROADMAP 2.5. Reporting-only for now: the scan prints what is left and the
- * test passes. Flip this to `true` once Yang declares the content complete,
- * and a stray placeholder card fails the build instead of shipping.
+ * ROADMAP 2.5. Flipped 2026-09-08: the guard reports zero placeholders, so
+ * `FAIL_ON_PLACEHOLDERS` is `true` and a stray placeholder card now fails the
+ * build instead of shipping — an enforced invariant rather than a report.
  */
-const FAIL_ON_PLACEHOLDERS = false;
+const FAIL_ON_PLACEHOLDERS = true;
 
 const TARGETS = ['src/content', 'src/components/ProfileCard.astro'];
 
