@@ -51,7 +51,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
     <div>
       <ProjectGrid title={tr('home.featured')} note={notes.apps}>
         {
-          apps.map((app) => (
+          apps.map((app, i) => (
             <ProjectCard
               href={`/apps/${slugOf(app.id)}/`}
               title={app.data.title}
@@ -59,6 +59,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
               status={app.data.status}
               statusLabel={tr(`status.${app.data.status}`)}
               cover={app.data.cover}
+              eager={i === 0}
               action={
                 app.data.playUrl ? { label: tr('card.play'), url: app.data.playUrl } : undefined
               }
