@@ -56,6 +56,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
               status={app.data.status}
               statusLabel={tr(`status.${app.data.status}`)}
               cover={app.data.cover}
+              icon={app.data.icon}
               action={
                 app.data.playUrl ? { label: tr('card.play'), url: app.data.playUrl } : undefined
               }
