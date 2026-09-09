@@ -1,9 +1,10 @@
 # Roadmap — after the withastro/action v6 upgrade
 
-Status as of 2026-09-02 (end of `feature/phase2.2`): the site is **live** at
-https://songer522.github.io/ and the first deploy is green. Structure is complete and
-bilingual, and **Phase 2 content is now real** — every placeholder is gone from both
-collections. The v6 action upgrade is queued as its own session and is not covered here.
+Status as of 2026-09-08 (end of `feature/enhancement09082026`): the site is **live** at
+https://songer522.github.io/ and deploys are green. Structure is complete and bilingual,
+and **Phase 2 content is now real** — every placeholder is gone from both collections.
+The withastro/action v6 upgrade (with CI running tests + `astro check` on every PR)
+landed since the 09-02 status line below; the open roadmap items now are 2.3 and Phase 3.
 
 Everything below was verified against the repo, not assumed. Each item states the
 evidence.
@@ -61,6 +62,13 @@ identical in source to one that works.
 `#c2703d`). `BaseLayout.astro`'s `<head>` now links all three (`icon`,
 `apple-touch-icon`, `manifest`). Verified via `npm run build` (links present in
 emitted HTML) and `npm test` (15/15 passing).
+
+Follow-up (2026-09-08): the palette has since moved, and the manifest had drifted —
+`theme_color` is `#b95f36` (the current `--accent`), kept in step by a new
+`<meta name="theme-color">` in `BaseLayout.astro`. The `.ico` was also re-encoded as
+PNG frames at 16/32/48 only — the 256 px raw-DIB frame was 270 KB of the file's 285 KB
+and browsers never request a tab favicon that large. The kept frames are
+pixel-identical; the file is now ~12 KB.
 
 ### 1.3 Add a 404 page — **DONE (2026-09-01)**
 
@@ -159,12 +167,16 @@ responsive `srcset` — all of which matter a lot for a screenshot-heavy portfol
 none of which work on `public/` SVGs. Update `ProjectCard.astro` and the detail pages
 to render `<Image />` instead of `<img>`.
 
-### 2.4 Tighten the schema once placeholders are gone — **UNBLOCKED, not done**
+### 2.4 Tighten the schema once placeholders are gone — **DONE (2026-09-08)**
 
 `links[].url` is still `z.string()`. The blocker is gone: `grep -rn 'url: *"#"'
 src/content/` returns nothing, so changing it to `z.string().url()` would pass today and
 make a malformed link fail the build instead of shipping. A one-line change in
 `src/content.config.ts`.
+
+Landing note: done on 2026-09-08 — `links[].url` and `playUrl` now validate as URLs in
+`src/content.config.ts` (Zod 4's `z.url()`, the non-deprecated form of the proposal
+below), and the `cover` comment no longer cites the removed placeholder SVGs.
 
 ### 2.5 Optional guard: report remaining placeholders — **DONE (2026-09-02)**
 
@@ -185,6 +197,12 @@ complete and a stray placeholder fails the build instead of shipping. Both modes
 verified. A `vitest.config.ts` was added with `disableConsoleIntercept: true` — the
 default reporter swallows stdout from passing tests, which would have made the report
 invisible. Current baseline: **78 placeholders across 12 files**; `npm test` is 26/26.
+
+**Flipped on 2026-09-08**: `FAIL_ON_PLACEHOLDERS` is now `true` — the guard reported zero
+placeholders, so this turned from a report into an enforced invariant. The scan's
+`/images/placeholders/` marker is vestigial for now: the whole `public/images/placeholders/`
+folder was removed the same day as dead deploy weight, so the marker only fires if someone
+reintroduces the pattern.
 
 ---
 
@@ -238,13 +256,9 @@ static default working — it is an optimization of a solved problem, not a subs
 
 ## Suggested sequencing
 
-Phase 1 and Phase 2 are both done. What is left, cheapest first:
+Phase 1, 2.4, 2.5, and the v6 upgrade are done. What is left, cheapest first:
 
-1. **2.4** — one line, unblocked, nothing currently violates it.
-2. **2.5's switch** — flip `FAIL_ON_PLACEHOLDERS` to `true` in
-   `tests/placeholder-guard.test.ts`. The guard reports zero today, so this turns a
-   report into an enforced invariant.
-3. **The v6 action upgrade** — its own session, already prepped.
-4. **2.3** — the `image()` migration; the largest of these, and the one with real
-   payoff for a screenshot-heavy site.
-5. **Phase 3** — revisit with real traffic and real content to reason about.
+1. **2.3** — the `image()` migration; the largest of these, and the one with real
+   payoff for a screenshot-heavy site (~88% byte cut on covers: ~2.1 MB of app/video
+   covers compress to ~350 KB of WebP/AVIF with `srcset`).
+2. **Phase 3** — revisit with real traffic and real content to reason about.

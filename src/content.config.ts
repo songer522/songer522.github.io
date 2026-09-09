@@ -9,15 +9,15 @@ const apps = defineCollection({
     summary: z.string(), // one line, shown on the card
     status: z.enum(['live', 'wip', 'free-tool']),
     tags: z.array(z.string()).default([]),
-    cover: z.string(), // e.g. /images/placeholders/app-1.svg
+    cover: z.string(), // e.g. /images/apps/rewind.png
     // Something playable or usable in the browser, promoted to a button on the card.
-    playUrl: z.string().optional(),
+    playUrl: z.url().optional(),
     ogImage: z.string().optional(),
     links: z
       .array(
         z.object({
           label: z.string(),
-          url: z.string(),
+          url: z.url(), // App Store, GitHub, site, etc. — always absolute
         }),
       )
       .default([]), // App Store + GitHub + site, etc.

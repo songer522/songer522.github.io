@@ -30,7 +30,7 @@ Each app or video is a pair of Markdown files — one per locale, sharing the sa
    - `live` — shipped and available
    - `wip` — in progress
    - `free-tool` — a free tool/utility
-4. `cover` is a plain path into `public/images/` (e.g. `/images/placeholders/app-1.svg`),
+4. `cover` is a plain path into `public/images/` (e.g. `/images/apps/rewind.png`),
    not Astro's `image()` helper — see the migration note below.
 5. Markdown body is the detail-page content.
 

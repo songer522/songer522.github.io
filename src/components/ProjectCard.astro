@@ -13,9 +13,15 @@ interface Props {
    * above it instead of nesting inside it, which HTML does not allow.
    */
   action?: { label: string; url: string };
+  /**
+   * True for a card in the first row of a grid that sits at the top of the page,
+   * so its cover — the likely LCP image — loads eagerly. Every other card in the
+   * grid defers until it is near the viewport.
+   */
+  eager?: boolean;
 }
 
-const { href, title, summary, status, statusLabel, cover, action } = Astro.props;
+const { href, title, summary, status, statusLabel, cover, action, eager = false } = Astro.props;
 ---
 
 <article class="project-card">
@@ -23,7 +29,14 @@ const { href, title, summary, status, statusLabel, cover, action } = Astro.props
   {
     cover && (
       <div class="cover">
-        <img src={cover} alt="" width="1200" height="630" />
+        <img
+          src={cover}
+          alt=""
+          width="1200"
+          height="630"
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+        />
       </div>
     )
   }

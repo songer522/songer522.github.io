@@ -37,7 +37,10 @@ const apps = (await getCollection('apps', ({ id }) => localeOf(id) === locale))
   .filter((a) => a.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
 
+// The strip is headed "featured videos", so the `featured` flag decides what
+// goes on the home page — not mere recency. Newest of the featured ones first.
 const videos = (await getCollection('videos', ({ id }) => localeOf(id) === locale))
+  .filter((v) => v.data.featured)
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
   .slice(0, 4);
 ---
@@ -48,7 +51,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
     <div>
       <ProjectGrid title={tr('home.featured')} note={notes.apps}>
         {
-          apps.map((app) => (
+          apps.map((app, i) => (
             <ProjectCard
               href={`/apps/${slugOf(app.id)}/`}
               title={app.data.title}
@@ -56,6 +59,7 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
               status={app.data.status}
               statusLabel={tr(`status.${app.data.status}`)}
               cover={app.data.cover}
+              eager={i === 0}
               action={
                 app.data.playUrl ? { label: tr('card.play'), url: app.data.playUrl } : undefined
               }
