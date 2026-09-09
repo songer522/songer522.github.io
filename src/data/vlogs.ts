@@ -19,6 +19,14 @@ export const playlistUrl =
   'https://www.youtube.com/playlist?list=PLYThmuvRX57DaI0cAAHAji7hJIPOcPOe3';
 
 export const vlogs: Vlog[] = [
+  { id: 'c-OA9t2hsJE', title: 'A Gymnastics Competition 2026', date: '2026-01-24' },
+  { id: 'vUwA--BhWYg', title: 'Quebec Trip 2025', date: '2026-01-01' },
+  { id: 'R0wexnQBh6Y', title: 'Feed my starving children 2025', date: '2025-12-18' },
+  { id: 'xqYxe7c8tcQ', title: 'A Christmas Show 2025', date: '2025-12-17' },
+  { id: 'kiSXs7Ovc_w', title: 'Office and NBA', date: '2025-11-29' },
+  { id: 'r54YdGepT8I', title: 'Barbecue and Farm', date: '2025-11-23' },
+  { id: 'tRUZyKed_u4', title: 'Chicago botanic garden and Brookfield Zoo', date: '2025-11-16' },
+  { id: 'juvCRPsgEqw', title: 'Late night talk show exhibition in Chicago', date: '2025-11-10' },
   { id: '4nFLi-TKHWk', title: 'My Birthday 2025', date: '2025-11-06' },
   { id: 'aNKJwuvMSlk', title: 'Halloween 2025', date: '2025-11-01' },
   { id: 'XUwW0JQetqA', title: 'Trip to Holy hill', date: '2025-10-27' },
@@ -29,8 +37,8 @@ export const vlogs: Vlog[] = [
   { id: 'RXrdwYcu1ow', title: 'Northern Michigan Trip 2025', date: '2025-09-01' },
   { id: 'Ng8pVpZI0dg', title: 'Matthiessen State Park', date: '2025-08-25' },
   { id: '6sAuqLp9TPk', title: 'Blackberry Farm', date: '2025-08-23' },
-  { id: 'rv7JoL6GQj4', title: 'Seven Bridges and Kenosha', date: '2025-08-17' },
   { id: 'aFjh9qPzPmg', title: 'Stade farm veggie picking', date: '2025-08-17' },
+  { id: 'rv7JoL6GQj4', title: 'Seven Bridges and Kenosha', date: '2025-08-17' },
   { id: '-Hn9HQ7pYuE', title: 'Peggy Notebaert and downtown', date: '2025-08-09' },
   { id: 'osAsmIuXKs8', title: 'A day at work', date: '2025-08-07' },
   { id: 's4x28YMWHL8', title: 'National night out 2025', date: '2025-08-05' },
