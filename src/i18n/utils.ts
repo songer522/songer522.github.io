@@ -9,11 +9,6 @@ export function t(locale: Locale) {
   return (key: keyof (typeof ui)['zh']) => ui[locale][key] ?? ui[defaultLocale][key];
 }
 
-/** '/en/apps/foo/' -> 'en';  '/apps/foo/' -> 'zh' */
-export function getLocaleFromUrl(url: URL): Locale {
-  return url.pathname.split('/')[1] === 'en' ? 'en' : 'zh';
-}
-
 /**
  * Map the current path to its counterpart in the other locale.
  *   '/'              <-> '/en/'

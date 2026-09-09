@@ -17,7 +17,7 @@ const apps = (await getCollection('apps', ({ id }) => localeOf(id) === locale)).
   <h1 class="page-title">{tr('apps.title')}</h1>
   <ProjectGrid>
     {
-      apps.map((app) => (
+      apps.map((app, i) => (
         <ProjectCard
           href={`/en/apps/${slugOf(app.id)}/`}
           title={app.data.title}
@@ -25,7 +25,8 @@ const apps = (await getCollection('apps', ({ id }) => localeOf(id) === locale)).
           status={app.data.status}
           statusLabel={tr(`status.${app.data.status}`)}
           cover={app.data.cover}
-              icon={app.data.icon}
+          icon={app.data.icon}
+          eager={i === 0}
         />
       ))
     }
