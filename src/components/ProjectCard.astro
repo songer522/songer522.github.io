@@ -6,6 +6,8 @@ interface Props {
   status?: 'live' | 'wip' | 'free-tool';
   statusLabel?: string;
   cover?: string;
+  /** App icon, shown inline before the title at the title's own size. */
+  icon?: string;
   /**
    * An optional second destination — something you can do with the app right here,
    * rather than reading about it. The card itself still links to the detail page:
@@ -21,7 +23,17 @@ interface Props {
   eager?: boolean;
 }
 
-const { href, title, summary, status, statusLabel, cover, action, eager = false } = Astro.props;
+const {
+  href,
+  title,
+  summary,
+  status,
+  statusLabel,
+  cover,
+  icon,
+  action,
+  eager = false,
+} = Astro.props;
 ---
 
 <article class="project-card">
@@ -41,7 +53,10 @@ const { href, title, summary, status, statusLabel, cover, action, eager = false 
     )
   }
   <div class="body">
-    <p class="title"><a href={href}>{title}</a></p>
+    <p class="title">
+      {icon && <img class="title-icon" src={icon} alt="" width="56" height="56" />}
+      <a href={href}>{title}</a>
+    </p>
     <p class="summary">{summary}</p>
     <div class="actions">
       {

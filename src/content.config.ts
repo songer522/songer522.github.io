@@ -10,6 +10,9 @@ const apps = defineCollection({
     status: z.enum(['live', 'wip', 'free-tool']),
     tags: z.array(z.string()).default([]),
     cover: z.string(), // e.g. /images/apps/rewind.png
+    // An app icon, shown beside the title on the card and the detail page. Optional:
+    // most apps carry their identity in the cover shot and don't need one.
+    icon: z.string().optional(),
     // Something playable or usable in the browser, promoted to a button on the card.
     playUrl: z.url().optional(),
     ogImage: z.string().optional(),

@@ -521,6 +521,21 @@ img {
   margin: 0 0 0.5rem;
 }
 
+/*
+ * App icon beside a title. Sized in em and placed inside the title element, so it
+ * matches whatever type it sits next to — a card title or a detail-page h1 — and
+ * keeps matching it across the mobile breakpoints.
+ */
+.title-icon {
+  /* The global reset makes images block-level; this one belongs in the line of text. */
+  display: inline-block;
+  width: 1.05em;
+  height: 1.05em;
+  border-radius: 0.24em;
+  vertical-align: -0.16em;
+  margin-right: 0.35em;
+}
+
 .detail .tags {
   display: flex;
   flex-wrap: wrap;

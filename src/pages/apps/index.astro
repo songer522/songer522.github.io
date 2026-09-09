@@ -25,6 +25,7 @@ const apps = (await getCollection('apps', ({ id }) => localeOf(id) === locale)).
           status={app.data.status}
           statusLabel={tr(`status.${app.data.status}`)}
           cover={app.data.cover}
+          icon={app.data.icon}
           eager={i === 0}
         />
       ))

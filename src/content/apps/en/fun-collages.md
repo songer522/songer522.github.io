@@ -7,7 +7,7 @@ cover: /images/apps/fun-collages.png
 links:
   - { label: "App Store", url: "https://apps.apple.com/us/app/fun-collages/id471290783" }
 featured: false
-order: 5
+order: 6
 ---
 
 Fun Collages arranges a handful of photos from your library into a single image, in one

@@ -24,7 +24,10 @@ const tr = t(locale);
     <span class={`badge ${entry.data.status}`} style="position: static; display: inline-block; margin-bottom: 0.75rem;">
       {tr(`status.${entry.data.status}`)}
     </span>
-    <h1>{entry.data.title}</h1>
+    <h1>
+      {entry.data.icon && <img class="title-icon" src={entry.data.icon} alt="" width="56" height="56" />}
+      {entry.data.title}
+    </h1>
     <p>{entry.data.summary}</p>
     {
       entry.data.tags.length > 0 && (

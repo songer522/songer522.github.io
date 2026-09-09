@@ -7,7 +7,7 @@ cover: /images/apps/fun-collages.png
 links:
   - { label: "App Store", url: "https://apps.apple.com/us/app/fun-collages/id471290783" }
 featured: false
-order: 5
+order: 6
 ---
 
 Fun Collages 把相册里的几张照片拼成一张图。两种排版：**Collage**（自由拼贴）和
