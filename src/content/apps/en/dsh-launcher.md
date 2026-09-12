@@ -18,6 +18,18 @@ It was written for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-ha
 the command, port, project folder and browser are all configurable, so it works for any
 long-running local server.
 
+## Now in the Plugin Market
+
+DSH Launcher is now available in the DeepSeek Harness Plugin Market — open **Settings →
+Plugin Market**, search for `dsh-launcher`, and install it from there. The listing ships
+both halves: the menu bar app and the host plugin it reads, which writes the running
+server's port, PID and tokenized URL to `~/.config/dsh-launcher/runtime.json` and removes
+it on shutdown.
+
+![The DeepSeek Harness Plugin Market, showing the dsh-launcher listing](/images/apps/dsh-launcher-plugin-market.png)
+
+*Listed under Discover, installed in one click.*
+
 ## Why I built it
 
 Every time I wanted to use DeepSeek Harness, running it from source meant running it from a

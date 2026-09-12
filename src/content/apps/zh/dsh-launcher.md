@@ -16,6 +16,17 @@ DSH Launcher 把本地开发服务器搬进了 macOS 菜单栏：启动、在浏
 它是为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 写的，但命令、
 端口、项目目录和浏览器都可以配置，所以任意长期运行的本地服务它都能带。
 
+## 现已上架插件市场
+
+DSH Launcher 已经上架 DeepSeek Harness 的插件市场——打开**设置 → Plugin Market**，搜索
+`dsh-launcher` 就能直接安装。上架的是完整的两部分：菜单栏应用，以及它读取的宿主插件——
+后者把运行中服务器的端口、PID 和带 token 的 URL 写进 `~/.config/dsh-launcher/runtime.json`，
+并在关闭时清掉。
+
+![DeepSeek Harness 插件市场里的 dsh-launcher 条目](/images/apps/dsh-launcher-plugin-market.png)
+
+*在 Discover 里就能找到，一键安装。*
+
 ## 为什么做这个
 
 每次我想用 DeepSeek Harness，从源码运行就意味着必须从终端运行：
