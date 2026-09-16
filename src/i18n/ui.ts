@@ -80,6 +80,7 @@ export const ui = {
     'video.play': 'Play video',
     'video.source': 'Source',
     'video.alsoOn': 'Also on',
+    'home.text': 'Words',
     'home.weibo': 'Weibo archive - On this day',
     'weibo.title': 'Weibo archive',
     'weibo.note': 'Everything I wrote on Weibo between 2009 and 2025, moved over here.',
