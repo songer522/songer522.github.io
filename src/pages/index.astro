@@ -20,10 +20,10 @@ const tr = t(locale);
  * having them. Same arrangement as about.astro, which carries its prose per locale.
  */
 const notes = {
-  apps: '用户增长曲线非常平稳。',
+  apps: '没跳动，用户增长曲线非常平稳。',
   videos: '把各种类型都涉猎了，还是没啥用。',
-  weibo: '那时候我以为我很有意思。',
-  blog: '那时候我以为我很有深度。',
+  weibo: '微博存档 2009 - 2025，那时候以为我很有意思。',
+  blog: '博客存档 2005 - 2011，那时候以为我很有深度。',
   vlogs: '这个的主要受众可能只有 50 年后的大模型和大孙子。',
 };
 
@@ -90,14 +90,14 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
       </div>
       <a class="view-all" href="/videos/">{tr('card.viewAll')} →</a>
 
-      <h2 class="section-title" style="margin-top: 3rem;">{tr('home.weibo')}</h2>
+      <h2 class="section-title" style="margin-top: 3rem;">{tr('home.text')}</h2>
+
       <p class="section-note">{notes.weibo}</p>
       <h3 class="weibo-heading">{weiboTodayLabel}</h3>
       <WeiboToday locale={locale} />
       <a class="view-all" href="/weibo/">{tr('card.viewAll')} →</a>
 
-      <h2 class="section-title" style="margin-top: 3rem;">{tr('home.blog')}</h2>
-      <p class="section-note">{notes.blog}</p>
+      <p class="section-note" style="margin-top: 1.75rem;">{notes.blog}</p>
       <a class="cta" href="https://songer522.github.io/blog/">{tr('home.blogCta')} →</a>
 
       <h2 class="section-title" style="margin-top: 3rem;">{tr('home.vlogs')}</h2>
