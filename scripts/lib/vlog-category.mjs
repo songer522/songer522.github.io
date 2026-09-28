@@ -6,13 +6,16 @@
 export function categoryFromTitle(title) {
   const text = title.normalize('NFKC').toLowerCase();
 
-  if (/disney on ice/.test(text)) return 'occasions';
-  if (/disney|epcot|magic kingdom|animal kingdom|hollywood studios?|castaway|cruise|sailing|royal caribbean|utopia of the seas?/.test(text)) return 'disney';
-  if (/canada|quebec|banff|toronto|montreal|vancouver/.test(text)) return 'canada';
-  if (/office|after work|at work|work vlog|software engineer/.test(text)) return 'work';
-  if (/wisconsin|milwaukee|indianapolis|indiana|michigan|minnesota|galena|dubuque|kenosha|door county|rockford|starved rock|house on the rock|lake geneva|holy hill|great wolf lodge/.test(text)) return 'road';
-  if (/birthday|christmas|halloween|trick or treat|egg hunt|gymnastics competition|national night out|grandpa|grandma/.test(text)) return 'occasions';
-  if (/chicago|brookfield|field museum|botanic garden|morton arboretum|millennium park|millenium park|museum of science and industry|peggy notebaert|naper settlement/.test(text)) return 'local';
+  if (/\bdisney on ice\b/.test(text)) return 'occasions';
+  if (/\b(disney|epcot|magic kingdom|animal kingdom|hollywood studios?|royal caribbean|utopia of the seas?)\b/.test(text)) return 'disney';
+  if (/\b(canada|quebec|banff|toronto|montreal|vancouver)\b/.test(text)) return 'canada';
+
+  // These places are local even when a broader trip word also appears.
+  if (/\b(michigan avenue|lake michigan)\b/.test(text)) return 'local';
+  if (/\b(wisconsin|milwaukee|indianapolis|indiana|michigan|minnesota|galena|dubuque|kenosha|door county|rockford|starved rock|house on the rock|lake geneva|holy hill|great wolf lodge)\b/.test(text)) return 'road';
+  if (/\b(birthday|christmas|halloween|trick or treat|egg hunt|gymnastics competition|national night out|grandpa|grandma)\b/.test(text)) return 'occasions';
+  if (/\b(office|after work|at work|work vlog|software engineer)\b/.test(text)) return 'work';
+  if (/\b(chicago|brookfield|field museum|botanic garden|morton arboretum|millennium park|millenium park|museum of science and industry|peggy notebaert|naper settlement)\b/.test(text)) return 'local';
 
   return 'other';
 }

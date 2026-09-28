@@ -6,10 +6,13 @@ describe('vlog sections', () => {
   it('assigns every current vlog to exactly one of the six sections', () => {
     expect(vlogs.every((vlog) => vlog.category !== 'other')).toBe(true);
     const sections = groupVlogs(vlogs, 'en');
-    expect(sections).toHaveLength(6);
+    expect(sections.map((section) => section.key)).toEqual([
+      'disney', 'occasions', 'local', 'road', 'canada', 'work',
+    ]);
     expect(sections.flatMap((section) => section.vlogs)).toHaveLength(vlogs.length);
     for (const section of sections) {
-      expect(section.vlogs).toEqual(vlogs.filter((vlog) => section.vlogs.includes(vlog)));
+      expect(section.vlogs.every((vlog) => vlog.category === section.key)).toBe(true);
+      expect(section.vlogs).toEqual(vlogs.filter((vlog) => vlog.category === section.key));
     }
   });
 

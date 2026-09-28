@@ -589,7 +589,13 @@ img {
 
 .vlog-section {
   margin: 0 0 3rem;
-  scroll-margin-top: 1.5rem;
+  scroll-margin-top: 8rem;
+}
+
+@media (min-width: 641px) {
+  .vlog-section {
+    scroll-margin-top: 5rem;
+  }
 }
 
 .vlog-section h2 {

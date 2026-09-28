@@ -12,6 +12,14 @@ describe('new vlog category suggestions', () => {
     ['Quebec Trip 2026', 'canada'],
     ['Office Vlog', 'work'],
     ['Field Museum Chicago', 'local'],
+    ['Office Christmas party', 'occasions'],
+    ['Michigan Avenue at night', 'local'],
+    ['Sailing on Lake Michigan', 'local'],
+    ['Officer graduation', 'other'],
+    ['A day at workplace', 'other'],
+    ['Sailing day', 'other'],
+    ['Cruise 2026', 'other'],
+    ['Castaway picnic', 'other'],
     ['🐶🐜🤿🍦', 'other'],
   ])('%s → %s', (title, category) => {
     expect(categoryFromTitle(title)).toBe(category);
