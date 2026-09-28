@@ -1,5 +1,5 @@
 /**
- * @typedef {{ id: string, title: string, date?: string }} Vlog
+ * @typedef {{ id: string, title: string, date?: string, category?: string }} Vlog
  * @typedef {{ id: string, local: string, remote: string }} Drift
  * @typedef {{ id: string, title: string, from?: string, to: string }} DateChange
  */
@@ -31,7 +31,7 @@ export function resolveUnavailable(items, existing) {
     if (!local) continue;
     // An unavailable video has no readable description either, so its date is held
     // alongside its title.
-    resolved.push({ id: local.id, title: local.title, date: local.date });
+    resolved.push({ id: local.id, title: local.title, date: local.date, category: local.category });
     held.push(local.id);
   }
 
@@ -75,13 +75,16 @@ export function mergeVlogs(existing, fetched) {
     const local = byId.get(remote.id);
     if (!local) {
       const entry = { id: remote.id, title: remote.title, date: remote.date };
+      if (remote.category) entry.category = remote.category;
       vlogs.push(entry);
       added.push(entry);
       continue;
     }
 
     const date = remote.date ?? local.date;
-    vlogs.push({ id: local.id, title: local.title, date });
+    const entry = { id: local.id, title: local.title, date };
+    if (local.category ?? remote.category) entry.category = local.category ?? remote.category;
+    vlogs.push(entry);
     if (local.title !== remote.title) {
       drifted.push({ id: local.id, local: local.title, remote: remote.title });
     }

@@ -24,6 +24,13 @@ describe('resolveUnavailable', () => {
     expect(held).toEqual(['a']);
   });
 
+  it('keeps the local category when a known video goes private', () => {
+    const local = { id: 'a', title: 'A 6th Birthday', category: 'occasions' };
+    const { items } = resolveUnavailable([item('a', 'Private video', true)], [local]);
+
+    expect(items[0].category).toBe('occasions');
+  });
+
   it('drops an unavailable video it has never seen, since there is no title to show', () => {
     const { items, held } = resolveUnavailable([item('x', 'Deleted video', true)], []);
 

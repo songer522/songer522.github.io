@@ -557,6 +557,47 @@ img {
   max-width: 60ch;
 }
 
+.vlog-sections-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0 0 2.5rem;
+}
+
+.vlog-sections-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.vlog-sections-nav a:hover,
+.vlog-sections-nav a:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.vlog-sections-nav span,
+.vlog-section h2 span {
+  color: var(--muted);
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+}
+
+.vlog-section {
+  margin: 0 0 3rem;
+  scroll-margin-top: 1.5rem;
+}
+
+.vlog-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
 .vlog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

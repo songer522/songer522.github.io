@@ -1,5 +1,3 @@
-import type { Vlog } from '../data/vlogs';
-
 /** The shape we need off a videos collection entry — kept structural so this file
  *  stays free of `astro:content`, and therefore unit-testable. */
 interface HasPlatforms {
@@ -22,7 +20,7 @@ export function youTubeIdsFrom(videos: HasPlatforms[]): Set<string> {
  * upload can end up in both — it then shows twice under two different titles, and two
  * VideoEmbeds for one video would collide if they landed on the same page.
  */
-export function excludeCurated(vlogs: Vlog[], curatedIds: Set<string>): Vlog[] {
+export function excludeCurated<T extends { id: string }>(vlogs: T[], curatedIds: Set<string>): T[] {
   return vlogs.filter((vlog) => !curatedIds.has(vlog.id));
 }
 

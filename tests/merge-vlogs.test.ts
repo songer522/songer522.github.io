@@ -19,6 +19,13 @@ describe('mergeVlogs', () => {
     expect(result.added).toEqual([]);
   });
 
+  it('keeps a manually chosen category across syncs', () => {
+    const local = { id: 'a', title: 'Family trip', category: 'road' };
+    const remote = { id: 'a', title: 'Family trip', category: 'local' };
+
+    expect(mergeVlogs([local], [remote]).vlogs).toEqual([{ id: 'a', title: 'Family trip', date: undefined, category: 'road' }]);
+  });
+
   it('reports a drifted title rather than acting on it', () => {
     const result = mergeVlogs([v('a', 'my title')], [v('a', 'their title')]);
 

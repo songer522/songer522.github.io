@@ -1,9 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VlogGrid from '../../components/VlogGrid.astro';
+import VlogSections from '../../components/VlogSections.astro';
 import { vlogs as allVlogs, playlistUrl } from '../../data/vlogs';
 import { excludeCurated, youTubeIdsFrom } from '../../lib/vlogs';
+import { groupVlogs } from '../../lib/vlog-groups';
 import { t } from '../../i18n/utils';
 
 const locale = 'zh';
@@ -11,6 +12,7 @@ const tr = t(locale);
 
 // The same upload can sit in both the vlog playlist and the videos collection.
 const vlogs = excludeCurated(allVlogs, youTubeIdsFrom(await getCollection('videos')));
+const groups = groupVlogs(vlogs, locale);
 ---
 
 <BaseLayout title={tr('vlogs.title')} description={tr('vlogs.note')} locale={locale} noindex>
@@ -19,5 +21,5 @@ const vlogs = excludeCurated(allVlogs, youTubeIdsFrom(await getCollection('video
     {tr('vlogs.note')}{' '}
     <a href={playlistUrl} target="_blank" rel="noopener noreferrer">YouTube →</a>
   </p>
-  <VlogGrid vlogs={vlogs} />
+  <VlogSections groups={groups} locale={locale} />
 </BaseLayout>

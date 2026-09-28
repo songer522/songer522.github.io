@@ -16,11 +16,16 @@ const HEADER = `// Videos from the unlisted "Vlog" YouTube playlist, newest firs
 // Regenerate with \`npm run sync:vlogs\`. Titles here are intentionally sticky: the
 // sync never overwrites one you have edited, it only reports that it has drifted.
 // Dates are not — they track the description, which is where you edit them.
+// Categories are sticky too: new videos get a title-based suggestion, which you can
+// correct here without a later sync changing it.
+export type VlogCategory = 'disney' | 'occasions' | 'local' | 'road' | 'canada' | 'work' | 'other';
+
 export interface Vlog {
   id: string;
   title: string;
   /** YYYY-MM-DD, absent when the description carries no usable \`Date:\` line. */
   date?: string;
+  category: VlogCategory;
 }
 
 export const playlistUrl =
@@ -44,11 +49,11 @@ export function playlistIdFrom(source) {
 // The date is optional in the line shape as well as in the type: a video whose
 // description has no usable `Date:` line still belongs in the file, just unsorted at
 // the end rather than dropped.
-const ENTRY = /^\s*\{ id: '([^']+)', title: '(.*?)'(?:, date: '(\d{4}-\d{2}-\d{2})')? \},\s*$/;
+const ENTRY = /^\s*\{ id: '([^']+)', title: '(.*?)'(?:, date: '(\d{4}-\d{2}-\d{2})')?(?:, category: '(disney|occasions|local|road|canada|work|other)')? \},\s*$/;
 
 /**
  * @param {string} source the contents of src/data/vlogs.ts
- * @returns {{ id: string, title: string, date?: string }[]}
+ * @returns {{ id: string, title: string, date?: string, category?: string }[]}
  */
 export function parseVlogs(source) {
   const body = source.match(/export const vlogs: Vlog\[\] = \[([\s\S]*?)\n\];/)?.[1];
@@ -61,19 +66,21 @@ export function parseVlogs(source) {
     if (!match) throw new Error(`unrecognised entry in src/data/vlogs.ts: ${line.trim()}`);
     const entry = { id: match[1], title: unescapeTitle(match[2]) };
     if (match[3]) entry.date = match[3];
+    if (match[4]) entry.category = match[4];
     entries.push(entry);
   }
   return entries;
 }
 
 /**
- * @param {{ id: string, title: string, date?: string }[]} vlogs
+ * @param {{ id: string, title: string, date?: string, category?: string }[]} vlogs
  * @param {string} playlistUrl
  */
 export function renderVlogs(vlogs, playlistUrl) {
   const lines = vlogs.map((v) => {
     const date = v.date ? `, date: '${v.date}'` : '';
-    return `  { id: '${v.id}', title: '${escapeTitle(v.title)}'${date} },`;
+    const category = v.category ? `, category: '${v.category}'` : '';
+    return `  { id: '${v.id}', title: '${escapeTitle(v.title)}'${date}${category} },`;
   });
   return HEADER.replace('__PLAYLIST_URL__', playlistUrl) + lines.join('\n') + '\n];\n';
 }
