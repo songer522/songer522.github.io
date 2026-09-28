@@ -44,6 +44,16 @@ describe('vlogs file', () => {
     expect(parseVlogs(renderVlogs(vlogs, 'https://example.com/?list=L'))).toEqual(vlogs);
   });
 
+  it('round-trips categories for the synced file', () => {
+    const vlogs = [
+      { id: 'a', title: 'Disney cruise', date: '2026-01-01', category: 'disney' },
+      { id: 'b', title: 'Mystery outing', category: 'other' },
+    ];
+
+    expect(parseVlogs(renderVlogs(vlogs, 'https://example.com/?list=L'))).toEqual(vlogs);
+    expect(parseVlogs(real).every((vlog) => vlog.category)).toBe(true);
+  });
+
   it('gives every committed entry a date', () => {
     expect(parseVlogs(real).filter((v) => !v.date)).toEqual([]);
   });

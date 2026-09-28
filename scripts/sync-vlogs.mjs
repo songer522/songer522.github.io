@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Regenerate src/data/vlogs.ts from the YouTube playlist, and fetch thumbnails for
- * any new videos.
+ * Regenerate src/data/vlogs.ts from the YouTube playlist, suggest a section for
+ * new videos, and fetch their thumbnails.
  *
  *   npm run sync:vlogs
  *   npm run sync:vlogs -- --dry-run
@@ -21,6 +21,7 @@ import sharp from 'sharp';
 import { mergeVlogs, resolveUnavailable } from './lib/merge-vlogs.mjs';
 import { parseVlogDate, sortByDate } from './lib/vlog-date.mjs';
 import { parseVlogs, renderVlogs, playlistIdFrom } from './lib/vlogs-file.mjs';
+import { categoryFromTitle } from './lib/vlog-category.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const DATA_FILE = path.join(ROOT, 'src/data/vlogs.ts');
@@ -142,7 +143,10 @@ async function main() {
 
   const merged = mergeVlogs(existing, fetched);
   const { added, removed, drifted, redated } = merged;
-  const vlogs = sortByDate(merged.vlogs);
+  const vlogs = sortByDate(merged.vlogs.map((vlog) => ({
+    ...vlog,
+    category: vlog.category ?? categoryFromTitle(vlog.title),
+  })));
 
   console.log(`playlist ${playlistId}: ${fetched.length} videos`);
   console.log(`local file: ${existing.length} -> ${vlogs.length}`);
@@ -155,7 +159,11 @@ async function main() {
     console.log('');
   }
 
-  for (const v of added) console.log(`  + ${v.id}  ${v.date ?? 'no date'}  ${v.title}`);
+  for (const v of added) {
+    const category = v.category ?? categoryFromTitle(v.title);
+    console.log(`  + ${v.id}  ${v.date ?? 'no date'}  [${category}]  ${v.title}`);
+    if (category === 'other') console.log('      review category in src/data/vlogs.ts after sync');
+  }
   for (const v of removed) console.log(`  - ${v.id}  ${v.title}`);
   for (const d of redated) {
     console.log(`  @ ${d.id}  date ${d.from ?? 'none'} -> ${d.to}  ${d.title}`);

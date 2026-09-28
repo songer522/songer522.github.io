@@ -1,0 +1,25 @@
+---
+import VlogGrid from './VlogGrid.astro';
+import type { VlogGroup } from '../lib/vlog-groups';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  groups: VlogGroup[];
+  locale: Locale;
+}
+
+const { groups, locale } = Astro.props;
+---
+
+<nav class="vlog-sections-nav" aria-label={locale === 'zh' ? '生活记录分类' : 'Vlog sections'}>
+  {groups.map((group) => <a href={`#${group.key}`}>{group.title} <span>{group.vlogs.length}</span></a>)}
+</nav>
+
+<div class="vlog-sections">
+  {groups.map((group) => (
+    <section class="vlog-section" id={group.key} aria-labelledby={`${group.key}-title`}>
+      <h2 id={`${group.key}-title`}>{group.title} <span>{group.vlogs.length}</span></h2>
+      <VlogGrid vlogs={group.vlogs} />
+    </section>
+  ))}
+</div>
