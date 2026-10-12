@@ -248,16 +248,21 @@ permanently — that is the price of a book a reader can actually download. A ne
 means replacing both files and updating the sizes and page count in the record;
 `tests/book.test.ts` fails if a path is wrong or a stated size has drifted from the file.
 
-### Search stays off it
+### Search stays off it, as far as this host allows
 
-The book names real classmates, old friends and family, so:
+The book names real classmates, old friends and family, so `public/robots.txt`
+Disallows `/book/`, both download links carry `rel="nofollow"`, and neither file is a
+page, so neither reaches the sitemap.
 
-- `public/robots.txt` Disallows `/book/`, which is what actually stops crawlers fetching
-  the files — neither is a page, so neither reaches the sitemap anyway.
-- Both download links carry `rel="nofollow"`.
+That keeps crawlers from *fetching* the files. It does not guarantee they stay out of
+search results: a blocked URL can still be listed with nothing but its title, and
+`nofollow` is a hint, not a rule. The control that would actually work for a PDF or
+EPUB is an `X-Robots-Tag: noindex` response header served while the file stays
+crawlable — and GitHub Pages cannot set response headers, so if this ever has to be
+certain, the files need to move to hosting that can (S3, R2, Netlify).
 
-Readers who want it still get it from the home page. None of this is access control:
-anyone who guesses `/book/tonggao-2005-2025.pdf` reaches it. Treat the folder as public.
+Readers who want the book still get it from the home page, and anyone who guesses
+`/book/tonggao-2005-2025.pdf` reaches it. Treat the folder as public.
 
 ## `cover` → `image()` migration
 
