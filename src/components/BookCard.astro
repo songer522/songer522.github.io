@@ -1,0 +1,44 @@
+---
+import { book } from '../data/book';
+import { t, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+const copy = book.copy[locale];
+---
+
+<article class="book-card">
+  <div class="cover">
+    <img
+      src={book.cover}
+      width="800"
+      height="1200"
+      alt={book.title}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+
+  <div class="body">
+    <h3 class="title">{book.title}</h3>
+    <p class="meta">{copy.meta}</p>
+    <p class="summary">{copy.summary}</p>
+
+    <div class="actions">
+      {
+        book.files.map((file) => (
+          // rel="nofollow" and the Disallow in public/robots.txt keep the files out of
+          // search results: the book names real classmates, old friends and family.
+          <a class="cta" href={file.path} rel="nofollow">
+            {tr('book.download').replace('{format}', file.format.toUpperCase())} ·{' '}
+            {file.size}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</article>

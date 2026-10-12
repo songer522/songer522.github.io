@@ -5,4 +5,11 @@ User-agent: *
 # is expressed here, and nothing under /blog/ (a separate repo) is affected.
 Disallow: /images/vlogs/
 
+# 《通稿（2005 — 2025）》— the PDF and EPUB name real classmates, old friends and
+# family, so they stay out of search. Both files are linked from the home page with
+# rel="nofollow", and neither is a page, so neither reaches the sitemap either; this
+# line is what actually keeps crawlers from fetching them. Readers still reach them
+# fine — this is a request not to index, not access control.
+Disallow: /book/
+
 Sitemap: https://songer522.github.io/sitemap-index.xml
