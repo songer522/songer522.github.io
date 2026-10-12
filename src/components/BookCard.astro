@@ -33,7 +33,12 @@ const copy = book.copy[locale];
         book.files.map((file) => (
           // rel="nofollow" and the Disallow in public/robots.txt keep the files out of
           // search results: the book names real classmates, old friends and family.
-          <a class="cta" href={file.path} rel="nofollow">
+          //
+          // `download` because the button promises a download and neither format is
+          // displayable by every browser: a 747-page PDF stalls the inline viewer, and
+          // an EPUB has no inline viewer at all — without this attribute the browser
+          // tries to render it and the reader gets a blank page or nothing.
+          <a class="cta" href={file.path} download={file.path.split('/').pop()} rel="nofollow">
             {tr('book.download').replace('{format}', file.format.toUpperCase())} ·{' '}
             {file.size}
           </a>
