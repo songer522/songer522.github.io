@@ -226,6 +226,44 @@ component does nothing but call that module, so the code the page runs is the co
 test runs. The last block in that file guards the attribute names the fixture depends on
 against drifting away from the components.
 
+## Book
+
+The 文字 section carries one book: **《通稿（2005 — 2025）》**, 宋二's writing for those
+twenty years, self-edited into eleven themed chapters with annotations. Like the vlogs it
+is not a content collection — there is one book, nobody is adding a second, and its text
+is Chinese on both sites, so there is no per-locale Markdown pair to keep in step. It is
+one hand-kept record in `src/data/book.ts`, rendered by `src/components/BookCard.astro`
+under the 文字 heading in both locales, right after the blog link.
+
+The title, the chapter counts and the summary are written, not generated. Edit them in
+`src/data/book.ts`; keep the title Chinese on the English site — only the chrome around
+it translates.
+
+### What is in the repo
+
+`public/book/tonggao-2005-2025.pdf` (7.4 MB, 747 pages) and
+`public/book/tonggao-2005-2025.epub` (3.7 MB), plus the cover at
+`public/images/book/tonggao.png`. About 11 MB, committed, so it is in git history
+permanently — that is the price of a book a reader can actually download. A new edition
+means replacing both files and updating the sizes and page count in the record;
+`tests/book.test.ts` fails if a path is wrong or a stated size has drifted from the file.
+
+### Search stays off it, as far as this host allows
+
+The book names real classmates, old friends and family, so `public/robots.txt`
+Disallows `/book/`, both download links carry `rel="nofollow"`, and neither file is a
+page, so neither reaches the sitemap.
+
+That keeps crawlers from *fetching* the files. It does not guarantee they stay out of
+search results: a blocked URL can still be listed with nothing but its title, and
+`nofollow` is a hint, not a rule. The control that would actually work for a PDF or
+EPUB is an `X-Robots-Tag: noindex` response header served while the file stays
+crawlable — and GitHub Pages cannot set response headers, so if this ever has to be
+certain, the files need to move to hosting that can (S3, R2, Netlify).
+
+Readers who want the book still get it from the home page, and anyone who guesses
+`/book/tonggao-2005-2025.pdf` reaches it. Treat the folder as public.
+
 ## `cover` → `image()` migration
 
 `cover` is a plain string path so placeholder SVGs are frictionless. Once real raster

@@ -5,4 +5,17 @@ User-agent: *
 # is expressed here, and nothing under /blog/ (a separate repo) is affected.
 Disallow: /images/vlogs/
 
+# 《通稿（2005 — 2025）》— the PDF and EPUB name real classmates, old friends and
+# family, so crawlers are told not to fetch them, and the home page marks both links
+# rel="nofollow". Neither is a page, so neither reaches the sitemap either.
+#
+# Know the limit of this: blocking a path here only stops crawling, not indexing. If
+# Google finds either URL — from the home page links, or from anywhere else that links
+# it — it can still list the URL as a result with no content of its own. The control
+# that would actually keep it out, an X-Robots-Tag: noindex response header served with
+# the files, is not something GitHub Pages can send; it would need hosting that sets
+# response headers. And none of this is access control — anyone who guesses a path
+# downloads the file. It is the best available, not a guarantee.
+Disallow: /book/
+
 Sitemap: https://songer522.github.io/sitemap-index.xml

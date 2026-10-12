@@ -50,6 +50,9 @@ export const ui = {
     'home.weiboCta': '看看这个存档',
     'home.blog': '博客存档 2005 - 2011',
     'home.blogCta': '去博客',
+    // The book's own copy lives with its record in src/data/book.ts — there is one
+    // book, so there is nothing else to translate here but the button.
+    'book.download': '下载 {format}',
     'locale.switch': '切换到 English',
     'footer.note': '© 2026 宋二 · 由 Astro、深夜和过量咖啡因驱动',
   },
@@ -100,6 +103,7 @@ export const ui = {
     'home.weiboCta': 'Browse the archive',
     'home.blog': 'Blog archive',
     'home.blogCta': 'Visit the blog',
+    'book.download': 'Download {format}',
     'locale.switch': '切换到中文',
     'footer.note': '© 2026 Yang · Powered by Astro, late nights, and too much caffeine',
   },

@@ -1,0 +1,20 @@
+# Git guesses whether a file is binary by sniffing its first 8000 bytes, and it gets
+# the book's PDF wrong — nothing in that window contains a NUL, so `git diff` counted
+# 47,975 lines of PDF text for the commit that added it, and `git grep` can even match
+# strings inside the file. Naming the types outright prevents both, and more importantly
+# stops Git text-merging a replaced book: a conflicted PDF would come out with `>>>>>>>`
+# markers embedded in it, i.e. a file that no longer opens.
+
+*.pdf  binary
+*.epub binary
+
+# Same reason for the images: vlog thumbnails and Weibo images are regenerated in bulk
+# by scripts, so a merge touching the same screenshot is a real scenario, and they are
+# small enough that a text diff of one is pure noise.
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary

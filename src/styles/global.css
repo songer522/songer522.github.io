@@ -1251,3 +1251,63 @@ dialog.lightbox img {
   color: var(--surface);
   transform: translateY(-1px);
 }
+
+/* The book. One card, two files, nothing to click through to — the download IS the
+   action, so unlike the blog link it carries the cover and the detail itself. */
+.book-card {
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 8.5rem 1fr;
+  margin-top: 1.75rem;
+  padding: 1.25rem;
+}
+
+.book-card .cover img {
+  border-radius: 8px;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.book-card .title {
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.15rem;
+}
+
+.book-card .meta {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 0.75rem;
+}
+
+.book-card .summary {
+  color: var(--text);
+  font-size: 0.92rem;
+  margin: 0 0 1rem;
+  max-width: 68ch;
+}
+
+.book-card .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+@media (max-width: 480px) {
+  .book-card {
+    grid-template-columns: 1fr;
+  }
+
+  .book-card .cover img {
+    width: 8.5rem;
+  }
+}
+
