@@ -93,16 +93,21 @@ const videos = (await getCollection('videos', ({ id }) => localeOf(id) === local
 
       <h2 class="section-title" style="margin-top: 3rem;">{tr('home.text')}</h2>
 
-      <p class="section-note">{notes.weibo}</p>
+      {/* The book leads 文字: it is twenty years of the writing, collected. The Weibo
+          and blog archives below are only parts of where it came from. */}
+      <BookCard locale={locale} />
+
+      {/* The weibo note reads as a subtitle to the section heading, which is why its
+          class tucks it up with a negative margin. After the book card that margin
+          would pull it into the card, so it gets a plain gap instead. Same reason on
+          the English home page. */}
+      <p class="section-note" style="margin-top: 1.25rem;">{notes.weibo}</p>
       <h3 class="weibo-heading">{weiboTodayLabel}</h3>
       <WeiboToday locale={locale} />
       <a class="view-all" href="/weibo/">{tr('card.viewAll')} →</a>
 
       <p class="section-note" style="margin-top: 1.75rem;">{notes.blog}</p>
       <a class="cta" href="https://songer522.github.io/blog/">{tr('home.blogCta')} →</a>
-
-      {/* The book sits under the same 文字 heading: it is the writing, collected. */}
-      <BookCard locale={locale} />
 
       <h2 class="section-title" style="margin-top: 3rem;">{tr('home.vlogs')}</h2>
       <p class="section-note">{notes.vlogs}</p>

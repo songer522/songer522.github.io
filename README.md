@@ -233,7 +233,8 @@ twenty years, self-edited into eleven themed chapters with annotations. Like the
 is not a content collection — there is one book, nobody is adding a second, and its text
 is Chinese on both sites, so there is no per-locale Markdown pair to keep in step. It is
 one hand-kept record in `src/data/book.ts`, rendered by `src/components/BookCard.astro`
-under the 文字 heading in both locales, right after the blog link.
+at the top of the 文字 heading in both locales, above the Weibo and blog links — the
+book is what twenty years of those add up to, so it leads the section.
 
 The title, the chapter counts and the summary are written, not generated. Edit them in
 `src/data/book.ts`; keep the title Chinese on the English site — only the chrome around
