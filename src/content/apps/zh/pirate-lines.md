@@ -9,7 +9,7 @@ links:
   - { label: "在浏览器里玩", url: "https://songer522.github.io/Grid/" }
   - { label: "GitHub", url: "https://github.com/songer522/Grid" }
 featured: true
-order: 3
+order: 4
 ---
 
 点格棋，海盗版。双方轮流在两个相邻的点之间画一条线，谁补上格子的第四条边，格子就归谁，而且

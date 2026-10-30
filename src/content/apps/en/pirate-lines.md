@@ -9,7 +9,7 @@ links:
   - { label: "Play in browser", url: "https://songer522.github.io/Grid/" }
   - { label: "GitHub", url: "https://github.com/songer522/Grid" }
 featured: true
-order: 3
+order: 4
 ---
 
 Dots and boxes, but with pirates. You and your opponent take turns drawing one line between
