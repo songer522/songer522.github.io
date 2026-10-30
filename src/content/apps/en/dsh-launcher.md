@@ -8,7 +8,7 @@ icon: /images/apps/dsh-launcher-icon.svg
 links:
   - { label: "GitHub", url: "https://github.com/songer522/dsh-launcher" }
 featured: true
-order: 4
+order: 5
 ---
 DSH Launcher puts a local development server in the macOS menu bar: start it, open it in
 your browser, restart it after a pull, or stop it — all one click, no terminal. It has no

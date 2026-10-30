@@ -8,7 +8,7 @@ icon: /images/apps/dsh-launcher-icon.svg
 links:
   - { label: "GitHub", url: "https://github.com/songer522/dsh-launcher" }
 featured: true
-order: 4
+order: 5
 ---
 DSH Launcher 把本地开发服务器搬进了 macOS 菜单栏：启动、在浏览器里打开、拉完代码后重启、
 用完停掉——都是一次点击，全程不用碰终端。它没有 Dock 图标，不占地方。
