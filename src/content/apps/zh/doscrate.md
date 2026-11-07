@@ -9,7 +9,7 @@ links:
   - { label: "下载 DMG (v1.0.0)", url: "https://github.com/songer522/DOSCrateForMac/releases/download/v1.0.0/DOSCrate-1.0.0.dmg" }
   - { label: "GitHub", url: "https://github.com/songer522/DOSCrateForMac" }
 featured: true
-order: 3
+order: 4
 ---
 
 DOSCrate 是一个原生的 macOS MS-DOS 游戏库管理器与启动器，用 Swift 6 和 SwiftUI 为 Apple

@@ -8,7 +8,7 @@ links:
   - { label: "App Store", url: "https://apps.apple.com/us/app/cochleo/id6759081282" }
   - { label: "GitHub", url: "https://github.com/songer522/HearingPractice" }
 featured: true
-order: 2
+order: 3
 ---
 
 Cochleo is a SwiftUI listening-practice app for cochlear implant users. It speaks a word
