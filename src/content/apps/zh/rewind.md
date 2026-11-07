@@ -8,7 +8,7 @@ links:
   - { label: "App Store", url: "https://apps.apple.com/us/app/id1137168287" }
   - { label: "GitHub", url: "https://github.com/songer522/PhotoFlashBack" }
 featured: true
-order: 1
+order: 2
 ---
 
 Rewind 会扫描你整个相册里与今天同月同日的照片和视频，按年份分组排好——2015 年的今天、

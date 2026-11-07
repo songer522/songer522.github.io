@@ -8,7 +8,7 @@ links:
   - { label: "App Store", url: "https://apps.apple.com/us/app/cochleo/id6759081282" }
   - { label: "GitHub", url: "https://github.com/songer522/HearingPractice" }
 featured: true
-order: 2
+order: 3
 ---
 
 Cochleo 用 SwiftUI 写成，为人工耳蜗使用者提供听力练习。它读出一个词或一句话，你从几个

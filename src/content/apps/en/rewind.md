@@ -8,7 +8,7 @@ links:
   - { label: "App Store", url: "https://apps.apple.com/us/app/id1137168287" }
   - { label: "GitHub", url: "https://github.com/songer522/PhotoFlashBack" }
 featured: true
-order: 1
+order: 2
 ---
 
 Rewind scans your whole photo library for anything shot on today's day and month, and

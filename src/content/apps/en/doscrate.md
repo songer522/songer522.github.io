@@ -9,7 +9,7 @@ links:
   - { label: "Download DMG (v1.0.0)", url: "https://github.com/songer522/DOSCrateForMac/releases/download/v1.0.0/DOSCrate-1.0.0.dmg" }
   - { label: "GitHub", url: "https://github.com/songer522/DOSCrateForMac" }
 featured: true
-order: 3
+order: 4
 ---
 
 DOSCrate is a native macOS library manager and launcher for MS-DOS games, written in Swift 6
